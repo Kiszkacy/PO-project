@@ -1,0 +1,19 @@
+{
+	"version": "tmp",
+	"settings": {
+		"mapSize": [10, 10],
+		"animalMapType": "Earth",
+		"startingPlantCount": 15,
+		"plantNutritionalValue": 10,
+		"plantGrowCount": 5,
+		"plantMapType": "WoodedEquator",
+		"startingAnimalCount": 10,
+		"startingAnimalEnergy": 8,
+		"reproduceRequiredEnergy": 10,
+		"reproduceEnergy": 8,
+		"mutationCount": [2, 6],
+		"genomeType": "CorrectiveGenome",
+		"genomeSize": 12,
+		"brainType": "NormalBrain",
+	}
+}
