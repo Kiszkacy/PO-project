@@ -18,7 +18,11 @@ public class MoveEvent implements Event {
 
     // constructors
 
-    // TODO
+    public MoveEvent(Mappable moved, Vector2 from, Vector2 to) {
+        this.moved = moved;
+        this.from = from;
+        this.to = to;
+    }
 
     // getters/setters
 

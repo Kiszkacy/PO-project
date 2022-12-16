@@ -1,5 +1,7 @@
 package evolution.brains;
 
+import evolution.genomes.Genome;
+
 import java.util.Random;
 
 public class RandomBrain extends Brain {
@@ -19,5 +21,15 @@ public class RandomBrain extends Brain {
             while (this.activeGene == oldActive)
                 this.activeGene = new Random().nextInt(this.genome.getSize());
         }
+    }
+
+    //constructor
+
+
+    public RandomBrain() {
+    }
+
+    public RandomBrain(Genome genome) {
+        super(genome);
     }
 }

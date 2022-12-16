@@ -1,5 +1,7 @@
 package evolution.brains;
 
+import evolution.genomes.Genome;
+
 public class NormalBrain extends Brain {
 
     // overrides
@@ -10,5 +12,14 @@ public class NormalBrain extends Brain {
     @Override
     public void think() {
         this.activeGene = (this.activeGene+1) % this.genome.getSize();
+    }
+
+    // constructor
+
+    public NormalBrain() {
+    }
+
+    public NormalBrain(Genome genome) {
+        super(genome);
     }
 }

@@ -17,7 +17,12 @@ public class ReproduceEvent implements Event {
 
     // constructors
 
-    // TODO
+    public ReproduceEvent(Creature firstParent, Creature secondParent, Creature child) {
+        this.firstParent = firstParent;
+        this.secondParent = secondParent;
+        this.child = child;
+    }
+
 
     // getters/setters
 

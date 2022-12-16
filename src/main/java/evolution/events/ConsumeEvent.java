@@ -17,7 +17,10 @@ public class ConsumeEvent implements Event {
 
     // constructors
 
-    // TODO
+    public ConsumeEvent(Eatable what, Creature by){
+        this.what = what;
+        this.by = by;
+    }
 
     // getters/setters
 
