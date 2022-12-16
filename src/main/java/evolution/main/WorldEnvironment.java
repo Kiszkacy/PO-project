@@ -3,8 +3,11 @@ package evolution.main;
 import evolution.events.*;
 import evolution.maps.AnimalMap;
 import evolution.maps.PlantMap;
+import evolution.util.Config;
 import evolution.util.Vector2;
 import java.util.Arrays;
+import java.util.LinkedList;
+import java.util.List;
 
 public class WorldEnvironment implements Environment, DeathObserver, MoveObserver, ConsumeObserver, ReproduceObserver {
 
@@ -57,8 +60,21 @@ public class WorldEnvironment implements Environment, DeathObserver, MoveObserve
     }
 
     @Override
-    public boolean isMateAt(Vector2 where) {
-        return !this.animalMap.isEmpty(where);
+    public boolean isMateAt(Vector2 where, Creature candidate) {
+        if (!mateAvailability[where.y][where.x]) return false; // check if available
+        if (this.animalMap.sizeOf(where) <= 1) return false; // check if there are at least 2 animals
+
+        LinkedList<Animal> animals = this.animalMap.getObjectsAt(where);
+        animals.sort((a1, a2) -> { // TODO should this be implemented in animalMap insert/move ?
+            if (a1.getEnergy() > a2.getEnergy()) return 1;
+            else if (a1.getEnergy() < a2.getEnergy()) return -1;
+            return 0;
+        });
+        int idx = animals.indexOf((Animal)candidate);
+        if (idx >= 2) return false; // candidate must be in top 2
+
+        if (animals.get(1-idx).getEnergy() < Config.getReproduceRequiredEnergy()) return false; // other animal must have required energy
+        return true;
     }
 
     @Override
@@ -67,8 +83,12 @@ public class WorldEnvironment implements Environment, DeathObserver, MoveObserve
     }
 
     @Override
-    public Creature getMate(Vector2 from) {
-        return null;
+    public Creature getMate(Vector2 from, Creature candidate) {
+        // everything already checked in isMateAt method
+        this.mateAvailability[from.y][from.x] = false;
+        LinkedList<Animal> animals = this.animalMap.getObjectsAt(from);
+        int idx = animals.indexOf((Animal)candidate);
+        return animals.get(1-idx);
     }
 
     @Override
@@ -96,6 +116,9 @@ public class WorldEnvironment implements Environment, DeathObserver, MoveObserve
     
     @Override
     public void update(Event event) { // TODO notify maps about events (ORDER IS IMPORTANT! (i think))
+        this.plantMap.update(event);
+        this.animalMap.update(event);
+
         if (event instanceof MoveEvent)
             this.onPositionChanged((MoveEvent)event);
         else if (event instanceof DeathEvent)

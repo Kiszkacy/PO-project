@@ -7,20 +7,26 @@ public class RandomGenome extends Genome {
 
     // overrides
 
-    @Override 
-    public Genome copy() {
-        return new RandomGenome(this.genes);
-    }
-    
+    /**
+     * Every mutated gene's value is picked randomly (can't be the same one).
+     * @param times how many genes are mutated
+     * @return itself
+     */
     @Override
     public Genome mutate(int times) {
         // TODO check times >= 0
+        for(int i = 0; i < times; i++) {
+            int oldValue = this.genes[i];
+            while (this.genes[i] == oldValue)
+                this.genes[i] = new Random().nextInt(Direction.size());
+        }
 
-        int[] copy = new int[this.size];
-        for(int i = 0; i < times; i++)
-            copy[i] = new Random().nextInt(Direction.size());
-        
-        return new RandomGenome(copy);
+        return this;
+    }
+
+    @Override
+    public Genome copy() {
+        return new RandomGenome(this.genes);
     }
 
     // constructors
@@ -32,6 +38,4 @@ public class RandomGenome extends Genome {
     public RandomGenome(int[] genes) { // TODO check genes size
         this.genes = genes;
     }
-
-    // getters/setters
 }
