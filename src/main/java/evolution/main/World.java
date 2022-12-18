@@ -1,16 +1,39 @@
 package evolution.main;
 
-import evolution.maps.AnimalMap;
-import evolution.maps.PlantMap;
 import evolution.util.Config;
 import evolution.util.Vector2;
 import java.util.Random;
 
+/**
+ * Main class held responsible for "giving life" to a simulation. Gives orders to animals, creates
+ * new plants and notifies environment about new day.
+ */
 public class World {
 
-    private WorldEnvironment environment;
+    private final WorldEnvironment environment;
 
 
+    public void init() {
+        Vector2 size = environment.getSize();
+
+        // place animals
+        for(int i = 0; i < Config.getStartingAnimalCount(); i++) {
+            environment.placeAnimal(new Animal(new Vector2(new Random().nextInt(size.x), new Random().nextInt(size.y)), this.environment));
+        }
+
+        // place plants
+        for(int i = 0; i < Config.getStartingPlantCount(); i++) {
+            Plant plant = new Plant(Config.getPlantNutritionalValue());
+            plant.setPos(new Vector2(new Random().nextInt(size.x), new Random().nextInt(size.y)));
+            while (!this.environment.placePlant(plant)) {
+                plant.setPos(new Vector2(new Random().nextInt(size.x), new Random().nextInt(size.y)));
+            }
+        }
+    }
+
+    /**
+     * Method describing what actions happen in what order in every day of simulation's lifespan.
+     */
     public void dayCycle() {
         environment.newDay();
         animalsMove();
@@ -42,10 +65,9 @@ public class World {
 
 
     public void growPlants() {
-        int growCount = Config.getPlantGrowCount();
         Vector2 size = this.environment.getSize();
 
-        for(int i = 0; i < growCount; i++) {
+        for(int i = 0; i < Config.getPlantGrowCount(); i++) {
             Plant plant = new Plant(Config.getPlantNutritionalValue());
             plant.setPos(new Vector2(new Random().nextInt(size.x), new Random().nextInt(size.y)));
             while (!this.environment.placePlant(plant)) {
@@ -57,19 +79,19 @@ public class World {
     // constructors
 
     public World() {
-        PlantMap plantMap; AnimalMap animalMap;
-        try {
-            plantMap = (PlantMap)Class.forName("evolution.maps."+Config.getPlantMapType()).getDeclaredConstructor().newInstance();
-        } catch (Exception e) {
-            throw new RuntimeException(String.format("plantMap type: '%s' not found", Config.getPlantMapType()));
-        }
+        this.environment = new WorldEnvironment();
+        this.init();
+    }
 
-        try {
-            animalMap = (AnimalMap)Class.forName("evolution.maps."+Config.getAnimalMapType()).getDeclaredConstructor().newInstance();
-        } catch (Exception e) {
-            throw new RuntimeException(String.format("animalMap type: '%s' not found", Config.getAnimalMapType()));
-        }
 
-        this.environment = new WorldEnvironment(Config.getMapSize(), plantMap, animalMap);
+    public World(WorldEnvironment environment) {
+        this.environment = environment;
+        this.init();
+    }
+
+    // getters/setters
+
+    public WorldEnvironment getEnvironment() {
+        return this.environment;
     }
 }

@@ -4,6 +4,11 @@ import evolution.genomes.Genome;
 import evolution.util.Config;
 import java.util.Random;
 
+
+/**
+ * Class that is responsible for defining which gene is currently active. Different implementation of think() method
+ * result in completely different behavior.
+ */
 public abstract class Brain {
     protected Genome genome;
     protected int activeGene;
@@ -24,7 +29,7 @@ public abstract class Brain {
 
     public Brain() {
         try {
-            this.genome = (Genome)Class.forName(Config.getGenomeType()).getDeclaredConstructor().newInstance();
+            this.genome = (Genome)Class.forName("evolution.genomes."+Config.getGenomeType()).getDeclaredConstructor().newInstance();
         } catch (Exception e) {
             throw new RuntimeException(String.format("genome type: '%s' not found", Config.getGenomeType()));
         }

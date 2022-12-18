@@ -1,7 +1,6 @@
 package evolution.main;
 
 import evolution.brains.Brain;
-import evolution.brains.RandomBrain;
 import evolution.events.*;
 import evolution.genomes.Genome;
 import evolution.util.Config;
@@ -85,7 +84,7 @@ public class Animal implements Creature, Mappable {
             Random rd = new Random();
             Genome childGenome = this.brain.getGenome().copy().mix(((Animal) with).brain.getGenome(), genomeRatio, rd.nextBoolean());
             childGenome.mutate(rd.nextInt(childGenome.getSize()));
-            Brain childBrain = (Brain)Class.forName("evolution.brains"+Config.getBrainType()).getDeclaredConstructor().newInstance(childGenome);
+            Brain childBrain = (Brain)Class.forName("evolution.brains."+Config.getBrainType()).getDeclaredConstructor().newInstance(childGenome);
             // energy transfer
             this.energy -= Config.getReproduceRequiredEnergy();
             ((Animal) with).energy -= Config.getReproduceRequiredEnergy();
@@ -133,33 +132,56 @@ public class Animal implements Creature, Mappable {
     public Animal() {
         this.pos = Vector2.ZERO();
         this.dir = Direction.values()[new Random().nextInt(Direction.size())];
-//        this.brain = new Brain();
-        // TODO default brain ?
+        try {
+            this.brain = (Brain)Class.forName("evolution.brains."+Config.getBrainType()).getDeclaredConstructor().newInstance();
+        } catch (Exception e) {
+            throw new RuntimeException(String.format("brain type: '%s' not found", Config.getBrainType()));
+        }
+        this.energy = Config.getStartingAnimalEnergy();
     }
 
     public Animal(Vector2 pos) {
         this.pos = pos;
         this.dir = Direction.values()[new Random().nextInt(Direction.size())];
-//        this.brain = new Brain();
-        // TODO default brain ?
+        try {
+            this.brain = (Brain)Class.forName("evolution.brains."+Config.getBrainType()).getDeclaredConstructor().newInstance();
+        } catch (Exception e) {
+            throw new RuntimeException(String.format("brain type: '%s' not found", Config.getBrainType()));
+        }
+        this.energy = Config.getStartingAnimalEnergy();
     }
 
     public Animal(Brain brain) {
         this.pos = Vector2.ZERO();
         this.dir = Direction.values()[new Random().nextInt(Direction.size())];
         this.brain = brain;
+        this.energy = Config.getStartingAnimalEnergy();
+    }
+
+    public Animal(Vector2 pos, Environment environment) {
+        this.pos = pos;
+        this.dir = Direction.values()[new Random().nextInt(Direction.size())];
+        try {
+            this.brain = (Brain)Class.forName("evolution.brains."+Config.getBrainType()).getDeclaredConstructor().newInstance();
+        } catch (Exception e) {
+            throw new RuntimeException(String.format("brain type: '%s' not found", Config.getBrainType()));
+        }
+        this.energy = Config.getStartingAnimalEnergy();
+        this.environment = environment;
     }
 
     public Animal(Vector2 pos, Brain brain) {
         this.pos = pos;
         this.dir = Direction.values()[new Random().nextInt(Direction.size())];
         this.brain = brain;
+        this.energy = Config.getStartingAnimalEnergy();
     }
 
     public Animal(Vector2 pos, Brain brain, Environment environment) {
         this.pos = pos;
         this.dir = Direction.values()[new Random().nextInt(Direction.size())];
         this.brain = brain;
+        this.energy = Config.getStartingAnimalEnergy();
         this.environment = environment;
     }
 

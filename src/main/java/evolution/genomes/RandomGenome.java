@@ -32,10 +32,10 @@ public class RandomGenome extends Genome {
     // constructors
 
     public RandomGenome() {
-        this.genes = new Random().ints(this.size, 0, Direction.size()).toArray();
+        super();
     }
 
     public RandomGenome(int[] genes) { // TODO check genes size
-        this.genes = genes;
+        super(genes);
     }
 }

@@ -12,8 +12,14 @@ public class ToxicCorpses extends PlantMap implements DeathObserver {
 
     // constructors
 
+    public ToxicCorpses(){
+        super();
+        this.deathMap = new int[this.size.y][this.size.x];
+    }
+
+
     public ToxicCorpses(Vector2 size){
-        super.init();
+        super(size);
         this.deathMap = new int[size.y][size.x];
     }
 

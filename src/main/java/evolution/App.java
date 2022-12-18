@@ -2,7 +2,6 @@ package evolution;
 
 import evolution.main.World;
 import evolution.util.Config;
-import java.lang.reflect.InvocationTargetException;
 
 public class App {
 
@@ -10,18 +9,18 @@ public class App {
     private World world;
 
 
-    public void run() {
+    public void tick() {
         world.dayCycle();
     }
 
 
-    public void init() {
+    private void init() {
         this.loadConfig();
         this.world = new World();
     }
 
 
-    public void loadConfig() {
+    private void loadConfig() {
         Config.loadConfig(this.configPath);
     }
 
@@ -29,5 +28,17 @@ public class App {
 
     public App(String configPath) {
         this.configPath = configPath;
+        this.init();
+    }
+
+    // getters/setters
+
+    public String getConfigPath() {
+        return this.configPath;
+    }
+
+
+    public World getWorld() {
+        return this.world;
     }
 }

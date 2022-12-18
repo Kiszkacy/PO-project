@@ -7,8 +7,11 @@ import evolution.util.Config;
 import evolution.util.Vector2;
 import java.util.Arrays;
 import java.util.LinkedList;
-import java.util.List;
 
+/**
+ * Communicates with all organisms alive in simulation. In control of maps containing animals' and plants'
+ * positions. Responsible for handling all Animal's events. Specifies reproduction conditions.
+ */
 public class WorldEnvironment implements Environment, DeathObserver, MoveObserver, ConsumeObserver, ReproduceObserver {
 
     private Vector2 size;
@@ -16,38 +19,60 @@ public class WorldEnvironment implements Environment, DeathObserver, MoveObserve
     private AnimalMap animalMap;
     private boolean[][] mateAvailability;
 
-
-    public void init() {
+    /**
+     * This method is required to be called at the end of constructor.
+     */
+    private void init() {
         this.mateAvailability = new boolean[this.size.y][this.size.x];
         for(boolean[] row : this.mateAvailability)
             Arrays.fill(row, true);
     }
 
-
+    /**
+     * Should be called once at the start of a simulation day. Resets all required data.
+     */
     public void newDay() {
         for(boolean[] row : this.mateAvailability)
             Arrays.fill(row, true);
     }
 
-
+    /**
+     * Adds animal to environment to its corresponding position. There can be multiple animals on the same position.
+     * @param animal animal that will be placed
+     * @return true if placement is successful, false otherwise
+     */
     public boolean placeAnimal(Animal animal) {
         this.animalMap.add(animal, animal.getPos());
+        animal.addObserver(this);
         return true;
     }
 
-
+    /**
+     * Adds plant to environment to its corresponding position. There can be only one plant on a given position.
+     * @param plant plant that will be placed
+     * @return true if placement is successful, false otherwise
+     */
     public boolean placePlant(Plant plant) {
         if (!this.plantMap.isEmpty(plant.getPos())) return false;
         this.plantMap.add(plant, plant.getPos());
+        plant.addObserver(this);
         return true;
     }
 
-
+    /**
+     * Removes given animal from the environment using its position to find it.
+     * @param animal animal that will be removed
+     * @return true if animal was successfully removed, false if animal was not found
+     */
     public boolean removeAnimal(Animal animal) {
         return this.animalMap.remove(animal, animal.getPos());
     }
 
-
+    /**
+     * Removes given plant from the environment using its position to find it.
+     * @param plant plant that will be removed
+     * @return true if plant was successfully removed, false if animal was not found
+     */
     public boolean removePlant(Plant plant) {
         return this.plantMap.remove(plant, plant.getPos());
     }
@@ -115,8 +140,8 @@ public class WorldEnvironment implements Environment, DeathObserver, MoveObserve
     }
     
     @Override
-    public void update(Event event) { // TODO notify maps about events (ORDER IS IMPORTANT! (i think))
-        this.plantMap.update(event);
+    public void update(Event event) {
+        this.plantMap.update(event); // IMPORTANT: maps are notified before events are handled
         this.animalMap.update(event);
 
         if (event instanceof MoveEvent)
@@ -129,9 +154,55 @@ public class WorldEnvironment implements Environment, DeathObserver, MoveObserve
             this.onReproduce((ReproduceEvent)event);
     }
 
-    // constructor
+    // constructors
 
-    public WorldEnvironment(Vector2 size, PlantMap plantMap, AnimalMap animalMap) {
+    public WorldEnvironment() {
+        this.size = Config.getMapSize();
+
+        try {
+            this.plantMap = (PlantMap)Class.forName("evolution.maps."+Config.getPlantMapType()).getDeclaredConstructor().newInstance();
+        } catch (Exception e) {
+            throw new RuntimeException(String.format("plantMap type: '%s' not found", Config.getPlantMapType()));
+        }
+
+        try {
+            this.animalMap = (AnimalMap)Class.forName("evolution.maps."+Config.getAnimalMapType()).getDeclaredConstructor().newInstance();
+        } catch (Exception e) {
+            throw new RuntimeException(String.format("animalMap type: '%s' not found", Config.getAnimalMapType()));
+        }
+
+        this.init();
+    }
+
+
+    public WorldEnvironment(Vector2 size) { // TODO size exceptions
+        this.size = size;
+
+        try {
+            this.plantMap = (PlantMap)Class.forName("evolution.maps."+Config.getPlantMapType()).getDeclaredConstructor().newInstance();
+        } catch (Exception e) {
+            throw new RuntimeException(String.format("plantMap type: '%s' not found", Config.getPlantMapType()));
+        }
+
+        try {
+            this.animalMap = (AnimalMap)Class.forName("evolution.maps."+Config.getAnimalMapType()).getDeclaredConstructor().newInstance();
+        } catch (Exception e) {
+            throw new RuntimeException(String.format("animalMap type: '%s' not found", Config.getAnimalMapType()));
+        }
+
+        this.init();
+    }
+
+
+    public WorldEnvironment(PlantMap plantMap, AnimalMap animalMap) {
+        this.size = Config.getMapSize();
+        this.plantMap = plantMap;
+        this.animalMap = animalMap;
+        this.init();
+    }
+
+
+    public WorldEnvironment(Vector2 size, PlantMap plantMap, AnimalMap animalMap) { // TODO size exceptions
         this.size = size;
         this.plantMap = plantMap;
         this.animalMap = animalMap;

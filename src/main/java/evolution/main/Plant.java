@@ -3,6 +3,7 @@ package evolution.main;
 import evolution.events.DeathEvent;
 import evolution.events.Event;
 import evolution.events.Observer;
+import evolution.util.Config;
 import evolution.util.Vector2;
 import java.util.LinkedList;
 import java.util.Objects;
@@ -43,12 +44,12 @@ public class Plant implements Eatable, Mappable {
 
     public Plant() {
         this.pos = Vector2.ZERO();
-        this.nutritionalValue = 10;
+        this.nutritionalValue = Config.getPlantNutritionalValue();
     }
 
     public Plant(Vector2 pos) {
         this.pos = pos;
-        this.nutritionalValue = 10;
+        this.nutritionalValue = Config.getPlantNutritionalValue();
     }
 
     public Plant(int nutritionalValue) {

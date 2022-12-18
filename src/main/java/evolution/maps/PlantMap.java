@@ -16,5 +16,12 @@ public abstract class PlantMap extends Map<Plant> implements Observer {
 
     // constructors
 
-    // TODO constructor
+    public PlantMap() {
+        super();
+    }
+
+
+    public PlantMap(Vector2 size) {
+        super();
+    }
 }

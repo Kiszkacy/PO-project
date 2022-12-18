@@ -1,7 +1,6 @@
 package evolution.genomes;
 
 import evolution.util.Direction;
-import java.util.Arrays;
 import java.util.Random;
 
 public class CorrectiveGenome extends Genome {
@@ -36,10 +35,10 @@ public class CorrectiveGenome extends Genome {
     // constructors
 
     public CorrectiveGenome() {
-        this.genes = new Random().ints(this.size, 0, Direction.size()).toArray();
+        super();
     }
 
     public CorrectiveGenome(int[] genes) { // TODO check genes size
-        this.genes = genes;
+        super(genes);
     }
 }

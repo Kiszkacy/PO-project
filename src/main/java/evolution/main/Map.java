@@ -1,11 +1,12 @@
 package evolution.main;
 
+import evolution.util.Config;
 import evolution.util.Vector2;
 import java.util.ArrayList;
 import java.util.LinkedList;
 
 public class Map<T extends Mappable> {
-    protected final Vector2 size; // TODO cant have final here ? check again
+    protected final Vector2 size;
     // TODO implement array of MAX_SIZE to which new objects will be added/removed from instead of list ?
     protected LinkedList<T> objects = new LinkedList<T>();
     protected ArrayList<ArrayList<LinkedList<T>>> tiles;
@@ -28,7 +29,7 @@ public class Map<T extends Mappable> {
     }
 
 
-    public boolean remove(T obj, Vector2 from) { // TODO implement Hash in Mappable ?
+    public boolean remove(T obj, Vector2 from) {
         this.objects.remove(obj);
         this.tiles.get(from.y).get(from.x).remove(obj);
         return true;
@@ -82,13 +83,12 @@ public class Map<T extends Mappable> {
     // constructors
 
     public Map() {
-        this.size = new Vector2(10,10);
+        this.size = Config.getMapSize();
         this.init();
     }
 
 
-    public Map(Vector2 size) { // TODO check size if its
-
+    public Map(Vector2 size) {
         if (!(size.x > 0 && size.y > 0)) {
             throw new IllegalArgumentException(String.format("size parameter should have positive values, size: %s", size.toString()));
         }
@@ -97,6 +97,10 @@ public class Map<T extends Mappable> {
     }
 
     // getters/setters
+
+    public Vector2 getSize() {
+        return this.size;
+    }
 
     public LinkedList<T> getObjects() {
         return this.objects;

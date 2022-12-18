@@ -4,7 +4,6 @@ import org.json.simple.JSONObject;
 import org.json.simple.JSONArray;
 import org.json.simple.parser.JSONParser;
 import java.io.FileReader;
-import java.io.InputStream;
 import java.net.URL;
 
 public class Config { // TODO threadLocal
@@ -34,17 +33,13 @@ public class Config { // TODO threadLocal
     public static void loadConfig(String path) {
         createInstance();
 
-
         try {
             // loading file path from resources directory
-//            ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
-//            URL url = classLoader.getResource(path);
-//            System.out.println(url);
-            // temporary
-            String absolutePath = "D:\\Dane\\Java files\\PO-project\\src\\main\\resources\\config.json";
+            ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
+            URL url = classLoader.getResource(path);
             // json parser
             JSONParser parser = new JSONParser();
-            JSONObject obj = (JSONObject) parser.parse(new FileReader(absolutePath));
+            JSONObject obj = (JSONObject) parser.parse(new FileReader(url.getPath()));
             // TODO config version check
             JSONObject settings = (JSONObject) obj.get("settings");
 //            System.out.println(settings);
@@ -95,7 +90,6 @@ public class Config { // TODO threadLocal
         return instance.mapSize;
     }
 
-
     public static String getAnimalMapType() {
         return instance.animalMapType;
     }
@@ -112,7 +106,6 @@ public class Config { // TODO threadLocal
         return instance.plantGrowCount;
     }
 
-
     public static String getPlantMapType() {
         return instance.plantMapType;
     }
@@ -125,6 +118,8 @@ public class Config { // TODO threadLocal
         return instance.startingAnimalCount;
     }
 
+    public static int getStartingAnimalEnergy() { return instance.startingAnimalEnergy; }
+
     public static Vector2 getMutationCount() {
         return instance.mutationCount;
     }
@@ -136,8 +131,7 @@ public class Config { // TODO threadLocal
     public static int getGenomeSize() {
         return instance.genomeSize;
     }
-    
-    
+
     public static String getBrainType() {
         return instance.brainType;
     } 

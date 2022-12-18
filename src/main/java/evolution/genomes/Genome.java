@@ -5,7 +5,10 @@ import evolution.util.Config;
 import java.util.Arrays;
 import java.util.Random;
 
-
+/**
+ * Class which acts as a container for genes. Is also responsible for various mutate() and mix() methods
+ * that can be used to define more complex behavior in a wider range.
+ */
 public abstract class Genome {
     protected int[] genes;
     protected int size = Config.getGenomeSize();
