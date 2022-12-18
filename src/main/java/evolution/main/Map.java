@@ -5,7 +5,7 @@ import java.util.ArrayList;
 import java.util.LinkedList;
 
 public class Map<T extends Mappable> {
-    protected Vector2 size; // TODO cant have final here ? check again
+    protected final Vector2 size; // TODO cant have final here ? check again
     // TODO implement array of MAX_SIZE to which new objects will be added/removed from instead of list ?
     protected LinkedList<T> objects = new LinkedList<T>();
     protected ArrayList<ArrayList<LinkedList<T>>> tiles;
@@ -87,7 +87,11 @@ public class Map<T extends Mappable> {
     }
 
 
-    public Map(Vector2 size) { // TODO check size if its positive
+    public Map(Vector2 size) { // TODO check size if its
+
+        if (!(size.x > 0 && size.y > 0)) {
+            throw new IllegalArgumentException(String.format("size parameter should have positive values, size: %s", size.toString()));
+        }
         this.size = size;
         this.init();
     }
@@ -96,5 +100,9 @@ public class Map<T extends Mappable> {
 
     public LinkedList<T> getObjects() {
         return this.objects;
+    }
+
+    public ArrayList<ArrayList<LinkedList<T>>> getTiles() {
+        return tiles;
     }
 }

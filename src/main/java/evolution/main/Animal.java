@@ -8,6 +8,7 @@ import evolution.util.Config;
 import evolution.util.Direction;
 import evolution.util.Vector2;
 import java.util.LinkedList;
+import java.util.Objects;
 import java.util.Random;
 
 public class Animal implements Creature, Mappable {
@@ -17,7 +18,7 @@ public class Animal implements Creature, Mappable {
     private Brain brain;
     private int energy;
     private Environment environment;
-    private LinkedList<Observer> observers = new LinkedList<>();
+    private final LinkedList<Observer> observers = new LinkedList<>();
 
     // overrides
 
@@ -55,30 +56,47 @@ public class Animal implements Creature, Mappable {
         this.notify(new ConsumeEvent(what, this));
     }
 
+    /**
+     *  Checks if animal has enough energy to reproduce and if there is mate on its position
+     *  if yes calls reproduce method and return true otherwise returns false
+     * @return if child
+     */
     @Override
     public boolean lookForMate() {
         if (this.energy < Config.getReproduceRequiredEnergy()) return false;
         if (!this.environment.isMateAt(this.pos, this)) return false;
 
-        Creature mate = this.environment.getMate(this.pos, this);
-        this.reproduce(mate);
+        this.reproduce(this.environment.getMate(this.pos, this));
         return true;
     }
 
+    /**
+     * Creates new Animal object, child with the same position as self, energy equal to 2 times ReproduceRequiredEnergy
+     * and genomes being a mix of parens genomes in ratio equal to their energy. Decreases both parents energy by
+     * ReproduceRequiredEnergy.
+     * @param with second parent
+     * @return Animal child
+     */
     @Override
     public Creature reproduce(Creature with) {
         try{
-            // create new child
+            // create new child components
             double genomeRatio = ((Animal)with).energy/(this.energy + ((Animal)with).energy);
-            Genome childGenome = this.brain.getGenome().copy().mix(((Animal) with).brain.getGenome(), genomeRatio, true);
-            Brain childBrain = (Brain)Class.forName(Config.getGenomeType()).getDeclaredConstructor().newInstance(childGenome);
-            // TODO give energy to child from parents
-            Animal child = new Animal(this.pos, childBrain, this.environment);
+            Random rd = new Random();
+            Genome childGenome = this.brain.getGenome().copy().mix(((Animal) with).brain.getGenome(), genomeRatio, rd.nextBoolean());
+            childGenome.mutate(rd.nextInt(childGenome.getSize()));
+            Brain childBrain = (Brain)Class.forName("evolution.brains"+Config.getBrainType()).getDeclaredConstructor().newInstance(childGenome);
+            // energy transfer
+            this.energy -= Config.getReproduceRequiredEnergy();
+            ((Animal) with).energy -= Config.getReproduceRequiredEnergy();
+            // create child
+            Animal child = new Animal(this.pos, childBrain, Config.getReproduceRequiredEnergy()*2, this.environment);
             // notify observers
             this.notify(new ReproduceEvent(this, with, child));
             return child;
+
         } catch (Exception e) {
-            throw new RuntimeException(String.format("genome type: '%s' not found", Config.getGenomeType()));
+            throw new RuntimeException(String.format("problem creating object of class: '%s'", Config.getBrainType()));
         }
     }
 
@@ -112,7 +130,6 @@ public class Animal implements Creature, Mappable {
     }
 
     // constructors
-    // TODO environment
     public Animal() {
         this.pos = Vector2.ZERO();
         this.dir = Direction.values()[new Random().nextInt(Direction.size())];
@@ -174,5 +191,29 @@ public class Animal implements Creature, Mappable {
 
     public void setEnergy(int energy) {
         this.energy = energy;
+    }
+
+    public Direction getDir() {
+        return dir;
+    }
+
+    public void setDir(Direction dir) {
+        this.dir = dir;
+    }
+
+    // hash
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Animal animal = (Animal) o;
+        // TODO Brain equals function
+        return energy == animal.energy && pos.equals(animal.pos) && dir == animal.dir && brain.equals(animal.brain);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(pos, dir, brain, energy);
     }
 }

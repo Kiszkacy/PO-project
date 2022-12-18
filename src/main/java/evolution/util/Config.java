@@ -34,13 +34,17 @@ public class Config { // TODO threadLocal
     public static void loadConfig(String path) {
         createInstance();
 
+
         try {
             // loading file path from resources directory
-            ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
-            URL url = classLoader.getResource(path);
+//            ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
+//            URL url = classLoader.getResource(path);
+//            System.out.println(url);
+            // temporary
+            String absolutePath = "D:\\Dane\\Java files\\PO-project\\src\\main\\resources\\config.json";
             // json parser
             JSONParser parser = new JSONParser();
-            JSONObject obj = (JSONObject) parser.parse(new FileReader(url.getPath()));
+            JSONObject obj = (JSONObject) parser.parse(new FileReader(absolutePath));
             // TODO config version check
             JSONObject settings = (JSONObject) obj.get("settings");
 //            System.out.println(settings);
@@ -58,7 +62,7 @@ public class Config { // TODO threadLocal
             instance.reproduceEnergy = (int) (long) settings.get("reproduceEnergy");
             JSONArray mutationCount = (JSONArray) settings.get("mutationCount");
             instance.mutationCount = new Vector2((int) (long) mutationCount.get(0), (int) (long) mutationCount.get(1));
-            instance.genomeType = (String) settings.get("mutationType");
+            instance.genomeType = (String) settings.get("genomeType");
             instance.genomeSize = (int) (long) settings.get("genomeSize");
             instance.brainType = (String) settings.get("brainType");
         } catch (Exception e) {

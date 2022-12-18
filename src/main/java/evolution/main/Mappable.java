@@ -6,4 +6,6 @@ public interface Mappable {
 
     Vector2 getPos();
     void setPos(Vector2 v);
+
+    int hashCode();
 }
