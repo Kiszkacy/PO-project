@@ -114,6 +114,10 @@ public class Config { // TODO threadLocal
         return instance.reproduceRequiredEnergy;
     }
 
+    public static int getReproduceEnergy() {
+        return instance.reproduceEnergy;
+    }
+
     public static int getStartingAnimalCount() {
         return instance.startingAnimalCount;
     }

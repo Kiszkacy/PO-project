@@ -5,9 +5,10 @@ import evolution.util.Vector2;
 import java.util.ArrayList;
 import java.util.LinkedList;
 
+import static evolution.util.EasyPrint.p;
+
 public class Map<T extends Mappable> {
     protected final Vector2 size;
-    // TODO implement array of MAX_SIZE to which new objects will be added/removed from instead of list ?
     protected LinkedList<T> objects = new LinkedList<T>();
     protected ArrayList<ArrayList<LinkedList<T>>> tiles;
 

@@ -2,7 +2,11 @@ package evolution.main;
 
 import evolution.util.Config;
 import evolution.util.Vector2;
+
+import java.util.LinkedList;
 import java.util.Random;
+
+import static evolution.util.EasyPrint.p;
 
 /**
  * Main class held responsible for "giving life" to a simulation. Gives orders to animals, creates
@@ -44,8 +48,11 @@ public class World {
 
 
     public void animalsMove() {
-        for(Animal a : this.environment.getAnimalMap().getObjects()) {
-            a.move();
+        int size = this.environment.getAnimalMap().getObjects().size();
+        for (int i = 0; i < size; i++) {
+            // Decreases expected size of list, if a case that animal died after moving and got deleted
+            this.environment.getAnimalMap().getObjects().get(i).move();
+            if (this.environment.getAnimalMap().getObjects().size() < size) size--;
         }
     }
 
@@ -58,8 +65,9 @@ public class World {
 
 
     public void animalsReproduce() {
-        for(Animal a : this.environment.getAnimalMap().getObjects()) {
-            a.lookForMate();
+        int size = this.environment.getAnimalMap().getObjects().size();
+        for(int i = 0; i < size; i++){
+            this.environment.getAnimalMap().getObjects().get(i).lookForMate();
         }
     }
 
@@ -68,6 +76,10 @@ public class World {
         Vector2 size = this.environment.getSize();
 
         for(int i = 0; i < Config.getPlantGrowCount(); i++) {
+            if (this.environment.getPlantMap().getObjects().size() >=
+                    this.environment.getSize().x*this.environment.getSize().y){
+                return;
+            }
             Plant plant = new Plant(Config.getPlantNutritionalValue());
             plant.setPos(new Vector2(new Random().nextInt(size.x), new Random().nextInt(size.y)));
             while (!this.environment.placePlant(plant)) {
