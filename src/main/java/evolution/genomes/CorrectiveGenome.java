@@ -3,6 +3,8 @@ package evolution.genomes;
 import evolution.util.Direction;
 import java.util.Random;
 
+import static evolution.util.EasyPrint.p;
+
 public class CorrectiveGenome extends Genome {
 
     // overrides
@@ -18,7 +20,7 @@ public class CorrectiveGenome extends Genome {
         // TODO this can be very slow
         for(int i = 0; i < times; i++) {
             int picked = new Random().nextInt(this.size);
-            Direction dir = Direction.values()[picked];
+            Direction dir = Direction.values()[this.genes[picked]];
             if (new Random().nextBoolean()) dir.next();
             else                            dir.prev();
             this.genes[picked] = dir.ordinal();
@@ -29,7 +31,7 @@ public class CorrectiveGenome extends Genome {
 
     @Override
     public Genome copy() {
-        return new CorrectiveGenome(this.genes);
+        return new CorrectiveGenome(this.genes.clone());
     }
 
     // constructors

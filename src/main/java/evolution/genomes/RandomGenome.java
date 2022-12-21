@@ -26,7 +26,7 @@ public class RandomGenome extends Genome {
 
     @Override
     public Genome copy() {
-        return new RandomGenome(this.genes);
+        return new RandomGenome(this.genes.clone());
     }
 
     // constructors
