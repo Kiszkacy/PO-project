@@ -5,7 +5,7 @@ import evolution.main.Eatable;
 
 public class ConsumeEvent implements Event {
 
-    private final Eatable what; // TODO no constructor error
+    private final Eatable what;
     private final Creature by;
 
     // overrides

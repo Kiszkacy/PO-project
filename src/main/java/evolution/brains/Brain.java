@@ -20,6 +20,8 @@ public abstract class Brain {
      */
     abstract public void think();
 
+    abstract public Brain copy();
+
     // overrides
 
     @Override
@@ -44,6 +46,12 @@ public abstract class Brain {
         this.activeGene = new Random().nextInt(this.genome.getSize());
     }
 
+
+    public Brain(Genome genome, int activeGene) {
+        this.genome = genome;
+        this.activeGene = activeGene;
+    }
+
     // getters/setters
 
     public int getActiveGene() {
@@ -55,11 +63,18 @@ public abstract class Brain {
         return this.genome;
     }
 
+    // hash & equals
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Brain brain = (Brain) o;
         return activeGene == brain.activeGene && genome.equals(brain.genome);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(genome, activeGene);
     }
 }

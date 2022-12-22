@@ -5,8 +5,6 @@ import evolution.main.Animal;
 import evolution.util.Direction;
 import evolution.util.Vector2;
 
-import static evolution.util.EasyPrint.p;
-
 public class Earth extends AnimalMap {
 
     @Override
@@ -16,8 +14,7 @@ public class Earth extends AnimalMap {
 
     @Override
     public boolean move(Animal obj, Vector2 from, Vector2 to){
-
-        Vector2 newPosition = to;
+        Vector2 newPosition = to.copy();
         if (to.x < 0) newPosition.x = this.size.x-1;
         if (to.x >= this.size.x) newPosition.x = 0;
         if (to.y < 0) {

@@ -15,13 +15,24 @@ public class NormalBrain extends Brain {
         this.activeGene = (this.activeGene+1) % this.genome.getSize();
     }
 
+    @Override
+    public Brain copy() {
+        return new RandomBrain(this.genome.copy(), this.activeGene);
+    }
+
     // constructors
 
     public NormalBrain() {
-        this.activeGene = new Random().nextInt(this.genome.getSize());
+        super();
     }
+
 
     public NormalBrain(Genome genome) {
         super(genome);
+    }
+
+
+    public NormalBrain(Genome genome, int activeGene) {
+        super(genome, activeGene);
     }
 }

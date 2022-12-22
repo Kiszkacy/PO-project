@@ -3,8 +3,6 @@ package evolution.genomes;
 import evolution.util.Direction;
 import java.util.Random;
 
-import static evolution.util.EasyPrint.p;
-
 public class CorrectiveGenome extends Genome {
 
     // overrides

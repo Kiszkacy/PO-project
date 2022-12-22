@@ -5,7 +5,7 @@ import evolution.util.Vector2;
 
 public class MoveEvent implements Event {
 
-    private final Mappable moved; // TODO no constructor error
+    private final Mappable moved;
     private final Vector2 from;
     private final Vector2 to;
 

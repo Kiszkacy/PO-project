@@ -5,8 +5,6 @@ import evolution.util.Vector2;
 import java.util.ArrayList;
 import java.util.LinkedList;
 
-import static evolution.util.EasyPrint.p;
-
 public class Map<T extends Mappable> {
     protected final Vector2 size;
     protected LinkedList<T> objects = new LinkedList<T>();
@@ -31,14 +29,14 @@ public class Map<T extends Mappable> {
 
 
     public boolean remove(T obj, Vector2 from) {
-        this.objects.remove(obj);
-        this.tiles.get(from.y).get(from.x).remove(obj);
+        if (!this.objects.removeIf(o -> o == obj)) return false; // comparing by reference !
+        if (!this.tiles.get(from.y).get(from.x).removeIf(o -> o == obj)) return false; // comparing by reference !
         return true;
     }
 
 
     public boolean move(T obj, Vector2 from, Vector2 to) {
-        this.tiles.get(from.y).get(from.x).remove(obj);
+        if (!this.tiles.get(from.y).get(from.x).removeIf(o -> o == obj)) return false; // comparing by reference !
         this.tiles.get(to.y).get(to.x).add(obj);
         return true;
     }
@@ -103,9 +101,11 @@ public class Map<T extends Mappable> {
         return this.size;
     }
 
+
     public LinkedList<T> getObjects() {
         return this.objects;
     }
+
 
     public ArrayList<ArrayList<LinkedList<T>>> getTiles() {
         return tiles;
