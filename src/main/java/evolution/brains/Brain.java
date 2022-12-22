@@ -2,10 +2,8 @@ package evolution.brains;
 
 import evolution.genomes.Genome;
 import evolution.util.Config;
-
 import java.util.Objects;
 import java.util.Random;
-
 
 /**
  * Class that is responsible for defining which gene is currently active. Different implementation of think() method

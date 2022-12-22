@@ -1,7 +1,6 @@
 package evolution.brains;
 
 import evolution.genomes.Genome;
-import evolution.genomes.RandomGenome;
 
 import java.util.Random;
 

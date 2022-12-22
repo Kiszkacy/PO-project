@@ -85,7 +85,7 @@ public class Animal implements Creature, Mappable {
             double genomeRatio = (((Animal)with).energy*1.0f)/(this.energy + ((Animal)with).energy);
             Random rd = new Random();
             Genome childGenome = this.brain.getGenome().copy().mix(((Animal) with).brain.getGenome(), genomeRatio, rd.nextBoolean());
-            childGenome.mutate(rd.nextInt(childGenome.getSize()));
+            childGenome.mutate(rd.nextInt(Config.getMutationCount().y-Config.getMutationCount().x) + Config.getMutationCount().x);
             Brain childBrain = (Brain)Class.forName("evolution.brains."+Config.getBrainType()).getConstructor(Genome.class).newInstance(new Object[]{childGenome});
             // energy transfer
             this.setEnergy(this.energy-Config.getReproduceEnergy());
