@@ -49,10 +49,9 @@ public class World {
 
     public void animalsMove() {
         int size = this.environment.getAnimalMap().getObjects().size();
-        for (int i = 0; i < size; i++) {
+        for (int i = size-1; i >= 0; i--) {
             // Decreases expected size of list, if a case that animal died after moving and got deleted
             this.environment.getAnimalMap().getObjects().get(i).move();
-            if (this.environment.getAnimalMap().getObjects().size() < size) size--;
         }
     }
 

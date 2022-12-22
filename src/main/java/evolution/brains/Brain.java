@@ -2,6 +2,8 @@ package evolution.brains;
 
 import evolution.genomes.Genome;
 import evolution.util.Config;
+
+import java.util.Objects;
 import java.util.Random;
 
 
@@ -51,5 +53,13 @@ public abstract class Brain {
 
     public Genome getGenome() {
         return this.genome;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Brain brain = (Brain) o;
+        return activeGene == brain.activeGene && genome.equals(brain.genome);
     }
 }
