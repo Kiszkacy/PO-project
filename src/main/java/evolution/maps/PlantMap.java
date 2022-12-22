@@ -22,6 +22,6 @@ public abstract class PlantMap extends Map<Plant> implements Observer {
 
 
     public PlantMap(Vector2 size) {
-        super();
+        super(size);
     }
 }

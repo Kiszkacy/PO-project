@@ -1,6 +1,5 @@
 package evolution;
 
-import evolution.brains.Brain;
 import evolution.util.*;
 import static evolution.util.EasyPrint.*;
 
@@ -10,10 +9,14 @@ public class Main {
         try {
             // test | app running
             App app = new App("config.json");
-            p("tick 0:\n" + app.getWorld().getEnvironment().getAnimalMap().toString());
-            app.tick();
-            p("tick 1:\n" + app.getWorld().getEnvironment().getAnimalMap().toString());
-
+            pcol(Color.WHITE, "START");
+            pcol(Color.WEAK_GREEN, app.getWorld().getEnvironment().getAnimalMap().toString());
+            for (int i = 0; i < 10000; i++) {
+                app.tick();
+            }
+            pcol(Color.WHITE, "END");
+            pcol(Color.WEAK_BLUE, app.getWorld().getEnvironment().getAnimalMap().toString());
+            p("SIZE: " + app.getWorld().getEnvironment().getAnimalMap().getObjects().size());
         } catch (Exception e) {
             pcol(Color.RED, e.getMessage());
             pcol(Color.RED, "at: " + e.getStackTrace()[0].getClassName());

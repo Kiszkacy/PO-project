@@ -3,6 +3,7 @@ package evolution.main;
 import evolution.events.*;
 import evolution.maps.AnimalMap;
 import evolution.maps.PlantMap;
+import evolution.util.Color;
 import evolution.util.Config;
 import evolution.util.Vector2;
 import java.util.Arrays;
@@ -62,19 +63,21 @@ public class WorldEnvironment implements Environment, DeathObserver, MoveObserve
     /**
      * Removes given animal from the environment using its position to find it.
      * @param animal animal that will be removed
-     * @return true if animal was successfully removed, false if animal was not found
+     * @throws RuntimeException if animal could not be found on the map
      */
-    public boolean removeAnimal(Animal animal) {
-        return this.animalMap.remove(animal, animal.getPos());
+    public void removeAnimal(Animal animal) throws RuntimeException {
+        if (!this.animalMap.remove(animal, animal.getPos()))
+            throw new RuntimeException(String.format("could not remove (cannot be found): '%s' from: %s", animal, animal.getPos()));
     }
 
     /**
      * Removes given plant from the environment using its position to find it.
      * @param plant plant that will be removed
-     * @return true if plant was successfully removed, false if animal was not found
+     * @throws RuntimeException if plant could not be found on the map
      */
-    public boolean removePlant(Plant plant) {
-        return this.plantMap.remove(plant, plant.getPos());
+    public void removePlant(Plant plant) {
+        if (!this.plantMap.remove(plant, plant.getPos()))
+            throw new RuntimeException(String.format("could not remove (cannot be found): '%s' from: %s", plant, plant.getPos()));
     }
 
     // overrides
@@ -91,8 +94,8 @@ public class WorldEnvironment implements Environment, DeathObserver, MoveObserve
 
         LinkedList<Animal> animals = this.animalMap.getObjectsAt(where);
         animals.sort((a1, a2) -> { // TODO should this be implemented in animalMap insert/move ?
-            if (a1.getEnergy() > a2.getEnergy()) return 1;
-            else if (a1.getEnergy() < a2.getEnergy()) return -1;
+            if (a1.getEnergy() > a2.getEnergy()) return -1;
+            else if (a1.getEnergy() < a2.getEnergy()) return 1;
             return 0;
         });
         int idx = animals.indexOf((Animal)candidate);
@@ -120,7 +123,7 @@ public class WorldEnvironment implements Environment, DeathObserver, MoveObserve
     public void onDeath(DeathEvent event) {
         Killable died = event.getDied();
         if (died instanceof Animal) this.removeAnimal((Animal)died);
-        if (died instanceof Plant) this.removePlant((Plant)died);
+        if (died instanceof Plant)  this.removePlant((Plant)died);
     }
 
     @Override
@@ -131,7 +134,8 @@ public class WorldEnvironment implements Environment, DeathObserver, MoveObserve
 
     @Override
     public void onPositionChanged(MoveEvent event) {
-        this.animalMap.move((Animal)event.getMoved(), event.getFrom(), event.getTo());
+        if (!this.animalMap.move((Animal)event.getMoved(), event.getFrom(), event.getTo()))
+            throw new RuntimeException(String.format("MOVE: could not remove (cannot be found): '%s' from: %s", event.getMoved(), (event.getMoved()).getPos()));
     }
 
     @Override
@@ -213,6 +217,11 @@ public class WorldEnvironment implements Environment, DeathObserver, MoveObserve
 
     public AnimalMap getAnimalMap() {
         return this.animalMap;
+    }
+
+
+    public PlantMap getPlantMap() {
+        return plantMap;
     }
 
 

@@ -40,6 +40,11 @@ public class Plant implements Eatable, Mappable {
         }
     }
 
+    @Override
+    public String toString() {
+        return String.format("<nutritionalValue:'%s'; at %s>", this.nutritionalValue, this.pos);
+    }
+
     // constructors
 
     public Plant() {
@@ -78,6 +83,8 @@ public class Plant implements Eatable, Mappable {
     public int getNutritionalValue() {
         return this.nutritionalValue;
     }
+
+    // hash & equals
 
     @Override
     public boolean equals(Object o) {

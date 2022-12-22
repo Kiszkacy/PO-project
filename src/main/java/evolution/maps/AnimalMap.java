@@ -15,6 +15,6 @@ public abstract class AnimalMap extends Map<Animal> implements Observer {
 
 
     public AnimalMap(Vector2 size) {
-        super();
+        super(size);
     }
 }

@@ -2,6 +2,7 @@ package evolution.main;
 
 import evolution.util.Config;
 import evolution.util.Vector2;
+
 import java.util.Random;
 
 /**
@@ -18,12 +19,13 @@ public class World {
 
         // place animals
         for(int i = 0; i < Config.getStartingAnimalCount(); i++) {
-            environment.placeAnimal(new Animal(new Vector2(new Random().nextInt(size.x), new Random().nextInt(size.y)), this.environment));
+            Animal animal = new Animal(this.environment, new Vector2(new Random().nextInt(size.x), new Random().nextInt(size.y)));
+            environment.placeAnimal(animal);
         }
 
         // place plants
         for(int i = 0; i < Config.getStartingPlantCount(); i++) {
-            Plant plant = new Plant(Config.getPlantNutritionalValue());
+            Plant plant = new Plant();
             plant.setPos(new Vector2(new Random().nextInt(size.x), new Random().nextInt(size.y)));
             while (!this.environment.placePlant(plant)) {
                 plant.setPos(new Vector2(new Random().nextInt(size.x), new Random().nextInt(size.y)));
@@ -44,22 +46,26 @@ public class World {
 
 
     public void animalsMove() {
-        for(Animal a : this.environment.getAnimalMap().getObjects()) {
-            a.move();
+        int size = this.environment.getAnimalMap().getObjects().size();
+        for (int i = size-1; i >= 0; i--) {
+            // Decreases expected size of list, if a case that animal died after moving and got deleted
+            this.environment.getAnimalMap().getObjects().get(i).move();
         }
     }
 
 
     public void animalsEat() {
-        for(Animal a : this.environment.getAnimalMap().getObjects()) {
-            a.lookForFood();
+        int size = this.environment.getAnimalMap().getObjects().size();
+        for(int i = 0; i < size; i++){
+            this.environment.getAnimalMap().getObjects().get(i).lookForFood();
         }
     }
 
 
     public void animalsReproduce() {
-        for(Animal a : this.environment.getAnimalMap().getObjects()) {
-            a.lookForMate();
+        int size = this.environment.getAnimalMap().getObjects().size();
+        for(int i = 0; i < size; i++){
+            this.environment.getAnimalMap().getObjects().get(i).lookForMate();
         }
     }
 
@@ -68,7 +74,8 @@ public class World {
         Vector2 size = this.environment.getSize();
 
         for(int i = 0; i < Config.getPlantGrowCount(); i++) {
-            Plant plant = new Plant(Config.getPlantNutritionalValue());
+            if (this.environment.getPlantMap().getObjects().size() >= this.environment.getSize().x*this.environment.getSize().y) return;
+            Plant plant = new Plant();
             plant.setPos(new Vector2(new Random().nextInt(size.x), new Random().nextInt(size.y)));
             while (!this.environment.placePlant(plant)) {
                 plant.setPos(new Vector2(new Random().nextInt(size.x), new Random().nextInt(size.y)));

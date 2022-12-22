@@ -2,8 +2,8 @@ package evolution.brains;
 
 import evolution.genomes.Genome;
 import evolution.util.Config;
+import java.util.Objects;
 import java.util.Random;
-
 
 /**
  * Class that is responsible for defining which gene is currently active. Different implementation of think() method
@@ -17,6 +17,8 @@ public abstract class Brain {
      * Defines how next active gene is picked.
      */
     abstract public void think();
+
+    abstract public Brain copy();
 
     // overrides
 
@@ -42,6 +44,12 @@ public abstract class Brain {
         this.activeGene = new Random().nextInt(this.genome.getSize());
     }
 
+
+    public Brain(Genome genome, int activeGene) {
+        this.genome = genome;
+        this.activeGene = activeGene;
+    }
+
     // getters/setters
 
     public int getActiveGene() {
@@ -51,5 +59,20 @@ public abstract class Brain {
 
     public Genome getGenome() {
         return this.genome;
+    }
+
+    // hash & equals
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Brain brain = (Brain) o;
+        return activeGene == brain.activeGene && genome.equals(brain.genome);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(genome, activeGene);
     }
 }

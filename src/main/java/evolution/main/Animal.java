@@ -3,12 +3,15 @@ package evolution.main;
 import evolution.brains.Brain;
 import evolution.events.*;
 import evolution.genomes.Genome;
+import evolution.util.Color;
 import evolution.util.Config;
 import evolution.util.Direction;
 import evolution.util.Vector2;
 import java.util.LinkedList;
 import java.util.Objects;
 import java.util.Random;
+
+import static evolution.util.EasyPrint.pcol;
 
 public class Animal implements Creature, Mappable {
 
@@ -25,11 +28,11 @@ public class Animal implements Creature, Mappable {
     public void move() {
         this.brain.think();
         int geneType = this.brain.getActiveGene();
-        // TODO rotate dir by geneType dir type
         this.dir = this.dir.rotate(Direction.values()[geneType]);
-        Vector2 oldPosition = this.pos;
-        this.pos.add(this.dir.vectorize());
-        this.notify(new MoveEvent(this, oldPosition, this.pos));
+        Vector2 oldPosition = this.pos.copy();
+        this.pos = this.pos.add(this.dir.vectorize());
+        this.notify(new MoveEvent(this, oldPosition, this.pos.copy()));
+        this.setEnergy(this.energy-1);
     }
 
     /**
@@ -39,7 +42,6 @@ public class Animal implements Creature, Mappable {
      */
     @Override
     public boolean lookForFood() {
-        // TODO ask environment for food
         if(!this.environment.isFoodAt(this.pos)) return false;
         this.eat(this.environment.getFood(this.pos));
         return true;
@@ -51,7 +53,7 @@ public class Animal implements Creature, Mappable {
      */
     @Override
     public void eat(Eatable what) {
-        this.energy += what.getNutritionalValue();
+        this.setEnergy(this.energy+what.getNutritionalValue());
         this.notify(new ConsumeEvent(what, this));
     }
 
@@ -80,21 +82,25 @@ public class Animal implements Creature, Mappable {
     public Creature reproduce(Creature with) {
         try{
             // create new child components
-            double genomeRatio = ((Animal)with).energy/(this.energy + ((Animal)with).energy);
+            double genomeRatio = (((Animal)with).energy*1.0f)/(this.energy + ((Animal)with).energy);
             Random rd = new Random();
             Genome childGenome = this.brain.getGenome().copy().mix(((Animal) with).brain.getGenome(), genomeRatio, rd.nextBoolean());
-            childGenome.mutate(rd.nextInt(childGenome.getSize()));
-            Brain childBrain = (Brain)Class.forName("evolution.brains."+Config.getBrainType()).getDeclaredConstructor().newInstance(childGenome);
+            childGenome.mutate(rd.nextInt(Config.getMutationCount().y-Config.getMutationCount().x) + Config.getMutationCount().x);
+            Brain childBrain = (Brain)Class.forName("evolution.brains."+Config.getBrainType()).getConstructor(Genome.class).newInstance(new Object[]{childGenome});
             // energy transfer
-            this.energy -= Config.getReproduceRequiredEnergy();
-            ((Animal) with).energy -= Config.getReproduceRequiredEnergy();
+            this.setEnergy(this.energy-Config.getReproduceEnergy());
+            ((Animal) with).setEnergy(((Animal) with).energy - Config.getReproduceEnergy());
             // create child
-            Animal child = new Animal(this.pos, childBrain, Config.getReproduceRequiredEnergy()*2, this.environment);
+            Animal child = new Animal(this.environment, this.pos.copy(), childBrain, Config.getReproduceEnergy()*2);
             // notify observers
             this.notify(new ReproduceEvent(this, with, child));
             return child;
 
         } catch (Exception e) {
+            pcol(Color.RED, e.getMessage());
+            pcol(Color.RED, "at: " + e.getStackTrace()[0].getClassName());
+            pcol(Color.RED, "inside: " + e.getStackTrace()[0].getMethodName());
+            pcol(Color.RED, "line: " + e.getStackTrace()[0].getLineNumber());
             throw new RuntimeException(String.format("problem creating object of class: '%s'", Config.getBrainType()));
         }
     }
@@ -125,11 +131,12 @@ public class Animal implements Creature, Mappable {
 
     @Override
     public String toString() {
+        // DEBUG
         return String.format("<genome:'%s'; energy:'%d'; at %s>", this.brain.getGenome(), this.energy, this.pos);
     }
 
     // constructors
-    public Animal() {
+    public Animal(Environment environment) {
         this.pos = Vector2.ZERO();
         this.dir = Direction.values()[new Random().nextInt(Direction.size())];
         try {
@@ -138,27 +145,11 @@ public class Animal implements Creature, Mappable {
             throw new RuntimeException(String.format("brain type: '%s' not found", Config.getBrainType()));
         }
         this.energy = Config.getStartingAnimalEnergy();
+        this.environment = environment;
     }
 
-    public Animal(Vector2 pos) {
-        this.pos = pos;
-        this.dir = Direction.values()[new Random().nextInt(Direction.size())];
-        try {
-            this.brain = (Brain)Class.forName("evolution.brains."+Config.getBrainType()).getDeclaredConstructor().newInstance();
-        } catch (Exception e) {
-            throw new RuntimeException(String.format("brain type: '%s' not found", Config.getBrainType()));
-        }
-        this.energy = Config.getStartingAnimalEnergy();
-    }
 
-    public Animal(Brain brain) {
-        this.pos = Vector2.ZERO();
-        this.dir = Direction.values()[new Random().nextInt(Direction.size())];
-        this.brain = brain;
-        this.energy = Config.getStartingAnimalEnergy();
-    }
-
-    public Animal(Vector2 pos, Environment environment) {
+    public Animal(Environment environment, Vector2 pos) {
         this.pos = pos;
         this.dir = Direction.values()[new Random().nextInt(Direction.size())];
         try {
@@ -170,14 +161,17 @@ public class Animal implements Creature, Mappable {
         this.environment = environment;
     }
 
-    public Animal(Vector2 pos, Brain brain) {
-        this.pos = pos;
+
+    public Animal(Environment environment, Brain brain) {
+        this.pos = Vector2.ZERO();
         this.dir = Direction.values()[new Random().nextInt(Direction.size())];
         this.brain = brain;
         this.energy = Config.getStartingAnimalEnergy();
+        this.environment = environment;
     }
 
-    public Animal(Vector2 pos, Brain brain, Environment environment) {
+
+    public Animal(Environment environment, Vector2 pos, Brain brain) {
         this.pos = pos;
         this.dir = Direction.values()[new Random().nextInt(Direction.size())];
         this.brain = brain;
@@ -185,7 +179,8 @@ public class Animal implements Creature, Mappable {
         this.environment = environment;
     }
 
-    public Animal(Vector2 pos, Brain brain, int energy, Environment environment) {
+
+    public Animal(Environment environment, Vector2 pos, Brain brain, int energy) {
         this.pos = pos;
         this.dir = Direction.values()[new Random().nextInt(Direction.size())];
         this.brain = brain;
@@ -212,25 +207,27 @@ public class Animal implements Creature, Mappable {
 
 
     public void setEnergy(int energy) {
+        if (energy <= 0) this.notify(new DeathEvent(this));
         this.energy = energy;
     }
+
 
     public Direction getDir() {
         return dir;
     }
 
+
     public void setDir(Direction dir) {
         this.dir = dir;
     }
 
-    // hash
+    // hash & equals
 
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Animal animal = (Animal) o;
-        // TODO Brain equals function
         return energy == animal.energy && pos.equals(animal.pos) && dir == animal.dir && brain.equals(animal.brain);
     }
 

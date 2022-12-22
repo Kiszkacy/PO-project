@@ -45,6 +45,15 @@ public class Vector2 {
     }
 
 
+    public Vector2 clamp(Vector2 min, Vector2 max) {
+        if (this.x < min.x)         this.x = min.x;
+        else if (this.x > max.x)    this.x = max.x;
+        if (this.y < min.y)         this.y = min.y;
+        else if (this.y > max.y)    this.y = max.y;
+        return this;
+    }
+
+
     public Vector2 copy() {
         return new Vector2(this.x, this.y);
     }

@@ -4,7 +4,7 @@ import evolution.main.Creature;
 
 public class ReproduceEvent implements Event {
 
-    private final Creature firstParent; // TODO no constructor error
+    private final Creature firstParent;
     private final Creature secondParent;
     private final Creature child;
 

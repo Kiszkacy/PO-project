@@ -1,8 +1,10 @@
 package evolution.genomes;
 
+import evolution.brains.Brain;
 import evolution.util.Direction;
 import evolution.util.Config;
 import java.util.Arrays;
+import java.util.Objects;
 import java.util.Random;
 
 /**
@@ -66,7 +68,23 @@ public abstract class Genome {
         return this.size;
     }
 
+
     public int getGene(int at) { // TODO check range
         return this.genes[at];
+    }
+
+    // hash & equals
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Genome genome = (Genome) o;
+        return size == genome.size && Arrays.equals(genes, genome.genes);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(Arrays.hashCode(genes), size);
     }
 }

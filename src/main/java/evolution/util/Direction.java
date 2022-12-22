@@ -29,7 +29,7 @@ public enum Direction {
 
 
     public Direction prev() {
-        return Direction.values()[(this.ordinal()-1) % Direction.values().length];
+        return Direction.values()[(this.ordinal()+Direction.values().length-1) % Direction.values().length];
     }
 
 
