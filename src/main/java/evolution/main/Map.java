@@ -12,10 +12,10 @@ public class Map<T extends Mappable> {
 
 
     protected void init() {
-        this.tiles = new ArrayList<>(this.size.x);
-        for(int i = 0; i < this.size.x; i++) {
-            this.tiles.add(new ArrayList<LinkedList<T>>(this.size.y));
-            for(int j = 0; j < this.size.y; j++)
+        this.tiles = new ArrayList<>(this.size.y);
+        for(int i = 0; i < this.size.y; i++) {
+            this.tiles.add(new ArrayList<LinkedList<T>>(this.size.x));
+            for(int j = 0; j < this.size.x; j++)
                 this.tiles.get(i).add(new LinkedList<T>());
         }
     }
