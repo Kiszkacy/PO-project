@@ -13,8 +13,8 @@ import static evolution.util.EasyPrint.p;
 
 public abstract class PlantMap extends Map<Plant> implements Observer {
 
-    public List<Vector2> preferredTiles;
-    public List<Vector2> notPreferredTiles;
+    protected List<Vector2> preferredTiles;
+    protected List<Vector2> notPreferredTiles;
 
 
     public abstract void generatePreferredTiles();
@@ -42,5 +42,16 @@ public abstract class PlantMap extends Map<Plant> implements Observer {
 
     public PlantMap(Vector2 size) {
         super(size);
+    }
+
+    // getters/ setters
+
+
+    public List<Vector2> getPreferredTiles() {
+        return preferredTiles;
+    }
+
+    public List<Vector2> getNotPreferredTiles() {
+        return notPreferredTiles;
     }
 }
