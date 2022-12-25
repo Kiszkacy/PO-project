@@ -11,6 +11,7 @@ import java.util.LinkedList;
 import java.util.Objects;
 import java.util.Random;
 
+import static evolution.util.EasyPrint.p;
 import static evolution.util.EasyPrint.pcol;
 
 public class Animal implements Creature, Mappable {
@@ -207,7 +208,8 @@ public class Animal implements Creature, Mappable {
 
 
     public void setEnergy(int energy) {
-        if (energy <= 0) this.notify(new DeathEvent(this));
+        // checking this.energy > 0 to avoid using notify on already dead animal
+        if (energy <= 0 && this.energy > 0) this.notify(new DeathEvent(this));
         this.energy = energy;
     }
 

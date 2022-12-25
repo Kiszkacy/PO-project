@@ -9,6 +9,8 @@ import evolution.util.Vector2;
 import java.util.Arrays;
 import java.util.LinkedList;
 
+import static evolution.util.EasyPrint.p;
+
 /**
  * Communicates with all organisms alive in simulation. In control of maps containing animals' and plants'
  * positions. Responsible for handling all Animal's events. Specifies reproduction conditions.
@@ -60,14 +62,23 @@ public class WorldEnvironment implements Environment, DeathObserver, MoveObserve
         return true;
     }
 
+    public boolean placePlant() {
+        Plant plant = this.plantMap.newPlant();
+        if (!this.plantMap.isEmpty(plant.getPos())) return false;
+        this.plantMap.add(plant, plant.getPos());
+        plant.addObserver(this);
+        return true;
+    }
+
     /**
      * Removes given animal from the environment using its position to find it.
      * @param animal animal that will be removed
      * @throws RuntimeException if animal could not be found on the map
      */
     public void removeAnimal(Animal animal) throws RuntimeException {
-        if (!this.animalMap.remove(animal, animal.getPos()))
+        if (!this.animalMap.remove(animal, animal.getPos())) {
             throw new RuntimeException(String.format("could not remove (cannot be found): '%s' from: %s", animal, animal.getPos()));
+        }
     }
 
     /**

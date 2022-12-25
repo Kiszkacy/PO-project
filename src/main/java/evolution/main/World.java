@@ -5,12 +5,13 @@ import evolution.util.Vector2;
 
 import java.util.Random;
 
+import static evolution.util.EasyPrint.p;
+
 /**
  * Main class held responsible for "giving life" to a simulation. Gives orders to animals, creates
  * new plants and notifies environment about new day.
  */
 public class World {
-
     private final WorldEnvironment environment;
 
 
@@ -72,14 +73,13 @@ public class World {
 
     public void growPlants() {
         Vector2 size = this.environment.getSize();
+        // plantGrowCount seems to have impact on performance of generatePreferredTiles
+        this.environment.getPlantMap().generatePreferredTiles();
 
         for(int i = 0; i < Config.getPlantGrowCount(); i++) {
-            if (this.environment.getPlantMap().getObjects().size() >= this.environment.getSize().x*this.environment.getSize().y) return;
-            Plant plant = new Plant();
-            plant.setPos(new Vector2(new Random().nextInt(size.x), new Random().nextInt(size.y)));
-            while (!this.environment.placePlant(plant)) {
-                plant.setPos(new Vector2(new Random().nextInt(size.x), new Random().nextInt(size.y)));
-            }
+            if (this.environment.getPlantMap().getObjects().size() >= size.x*size.y) return;
+        // can iterate many times, if there are only few empty places left
+            while (!this.environment.placePlant());
         }
     }
 
