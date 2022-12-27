@@ -2,6 +2,7 @@ package evolution;
 
 import evolution.main.World;
 import evolution.util.Config;
+import evolution.util.ExceptionHandler;
 
 public class App {
 
@@ -14,13 +15,13 @@ public class App {
     }
 
 
-    private void init() {
+    private void init() throws Exception {
         this.loadConfig();
         this.world = new World();
     }
 
 
-    private void loadConfig() {
+    private void loadConfig() throws Exception {
         Config.loadConfig(this.configPath);
     }
 
@@ -28,7 +29,11 @@ public class App {
 
     public App(String configPath) {
         this.configPath = configPath;
-        this.init();
+        try {
+            this.init();
+        } catch (Exception e) {
+            ExceptionHandler.printCriticalInfo(e);
+        }
     }
 
     // getters/setters

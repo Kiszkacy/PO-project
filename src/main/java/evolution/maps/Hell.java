@@ -3,16 +3,14 @@ package evolution.maps;
 import evolution.events.Event;
 import evolution.main.Animal;
 import evolution.util.Config;
-import evolution.util.Direction;
 import evolution.util.Vector2;
-
 import java.util.Random;
 
 public class Hell extends AnimalMap {
 
     @Override
     public void update(Event event) {
-        // TODO update shouldn't do anything?
+
     }
 
     @Override
@@ -26,5 +24,6 @@ public class Hell extends AnimalMap {
         super.move(obj, from, newPosition);
         if(!obj.getPos().equals(to)) obj.setEnergy(obj.getEnergy() - Config.getReproduceEnergy());
         return true;
+
     }
 }

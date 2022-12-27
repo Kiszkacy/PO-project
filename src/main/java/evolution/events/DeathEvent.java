@@ -1,7 +1,7 @@
 package evolution.events;
 
 import evolution.main.Killable;
-import evolution.main.Plant;
+import java.util.Objects;
 
 public class DeathEvent implements Event {
 
@@ -24,5 +24,20 @@ public class DeathEvent implements Event {
 
     public Killable getDied() {
         return this.died;
+    }
+
+    // hash & equals
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        DeathEvent that = (DeathEvent) o;
+        return Objects.equals(this.died, that.died);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(this.died);
     }
 }

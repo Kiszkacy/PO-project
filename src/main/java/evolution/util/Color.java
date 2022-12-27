@@ -1,5 +1,8 @@
 package evolution.util;
 
+/**
+ * Enum holding all possible console print colors.
+ */
 public enum Color {
     CLEAR("\033[m"),
     DEFAULT("\033[m"),
@@ -19,6 +22,7 @@ public enum Color {
     CYAN("\033[96m"),
     GRAY("\033[37m"),
     WHITE("\033[97m");
+
 
     private final String val;
 

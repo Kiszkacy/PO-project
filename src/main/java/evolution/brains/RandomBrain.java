@@ -1,7 +1,6 @@
 package evolution.brains;
 
 import evolution.genomes.Genome;
-
 import java.util.Random;
 
 public class RandomBrain extends Brain {
@@ -23,6 +22,10 @@ public class RandomBrain extends Brain {
         }
     }
 
+    /**
+     * Create exact copy of this object.
+     * @return new copied object
+     */
     @Override
     public Brain copy() {
         return new RandomBrain(this.genome.copy(), this.activeGene);

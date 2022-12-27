@@ -14,6 +14,10 @@ public class NormalBrain extends Brain {
         this.activeGene = (this.activeGene+1) % this.genome.getSize();
     }
 
+    /**
+     * Create exact copy of this object.
+     * @return new copied object
+     */
     @Override
     public Brain copy() {
         return new NormalBrain(this.genome.copy(), this.activeGene);

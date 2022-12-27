@@ -18,6 +18,10 @@ public abstract class Brain {
      */
     abstract public void think();
 
+    /**
+     * Create exact copy of this object.
+     * @return new copied object
+     */
     abstract public Brain copy();
 
     // overrides
@@ -68,11 +72,11 @@ public abstract class Brain {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Brain brain = (Brain) o;
-        return activeGene == brain.activeGene && genome.equals(brain.genome);
+        return this.activeGene == brain.activeGene && this.genome.equals(brain.genome);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(genome, activeGene);
+        return Objects.hash(this.genome, this.activeGene);
     }
 }

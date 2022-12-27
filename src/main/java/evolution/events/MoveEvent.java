@@ -2,6 +2,7 @@ package evolution.events;
 
 import evolution.main.Mappable;
 import evolution.util.Vector2;
+import java.util.Objects;
 
 public class MoveEvent implements Event {
 
@@ -38,5 +39,20 @@ public class MoveEvent implements Event {
 
     public Vector2 getTo() {
         return this.to;
+    }
+
+    // hash & equals
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        MoveEvent moveEvent = (MoveEvent) o;
+        return Objects.equals(this.moved, moveEvent.moved) && Objects.equals(this.from, moveEvent.from) && Objects.equals(this.to, moveEvent.to);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(this.moved, this.from, this.to);
     }
 }

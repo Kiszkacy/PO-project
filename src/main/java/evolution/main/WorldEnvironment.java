@@ -9,8 +9,6 @@ import evolution.util.Vector2;
 import java.util.Arrays;
 import java.util.LinkedList;
 
-import static evolution.util.EasyPrint.p;
-
 /**
  * Communicates with all organisms alive in simulation. In control of maps containing animals' and plants'
  * positions. Responsible for handling all Animal's events. Specifies reproduction conditions.
@@ -56,14 +54,6 @@ public class WorldEnvironment implements Environment, DeathObserver, MoveObserve
      * @return true if placement is successful, false otherwise
      */
     public boolean placePlant(Plant plant) {
-        if (!this.plantMap.isEmpty(plant.getPos())) return false;
-        this.plantMap.add(plant, plant.getPos());
-        plant.addObserver(this);
-        return true;
-    }
-
-    public boolean placePlant() {
-        Plant plant = this.plantMap.newPlant();
         if (!this.plantMap.isEmpty(plant.getPos())) return false;
         this.plantMap.add(plant, plant.getPos());
         plant.addObserver(this);

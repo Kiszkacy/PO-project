@@ -3,34 +3,32 @@ package evolution.main;
 import evolution.util.Config;
 import evolution.util.Vector2;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Random;
-
-import static evolution.util.EasyPrint.p;
 
 /**
  * Main class held responsible for "giving life" to a simulation. Gives orders to animals, creates
  * new plants and notifies environment about new day.
  */
 public class World {
+
     private final WorldEnvironment environment;
 
-
+    /**
+     * This method is required to be called at the end of constructor.
+     */
     public void init() {
-        Vector2 size = environment.getSize();
-
-        // place animals
+        // place starting animals
+        Vector2 size = this.environment.getSize();
         for(int i = 0; i < Config.getStartingAnimalCount(); i++) {
             Animal animal = new Animal(this.environment, new Vector2(new Random().nextInt(size.x), new Random().nextInt(size.y)));
-            environment.placeAnimal(animal);
+            this.environment.placeAnimal(animal);
         }
-
-        // place plants
+        // place starting plants
+        this.environment.getPlantMap().generatePreferredTiles();
         for(int i = 0; i < Config.getStartingPlantCount(); i++) {
-            Plant plant = new Plant();
-            plant.setPos(new Vector2(new Random().nextInt(size.x), new Random().nextInt(size.y)));
-            while (!this.environment.placePlant(plant)) {
-                plant.setPos(new Vector2(new Random().nextInt(size.x), new Random().nextInt(size.y)));
-            }
+            this.growPlant();
         }
     }
 
@@ -38,11 +36,11 @@ public class World {
      * Method describing what actions happen in what order in every day of simulation's lifespan.
      */
     public void dayCycle() {
-        environment.newDay();
-        animalsMove();
-        animalsEat();
-        animalsReproduce();
-        growPlants();
+        this.environment.newDay();
+        this.animalsMove();
+        this.animalsEat();
+        this.animalsReproduce();
+        this.growPlants();
     }
 
 
@@ -72,14 +70,28 @@ public class World {
 
 
     public void growPlants() {
-        Vector2 size = this.environment.getSize();
-        // plantGrowCount seems to have impact on performance of generatePreferredTiles
         this.environment.getPlantMap().generatePreferredTiles();
-
         for(int i = 0; i < Config.getPlantGrowCount(); i++) {
-            if (this.environment.getPlantMap().getObjects().size() >= size.x*size.y) return;
-        // can iterate many times, if there are only few empty places left
-            while (!this.environment.placePlant());
+            this.growPlant();
+        }
+    }
+
+
+    private void growPlant() {
+        List<Vector2> tiles;
+        if (new Random().nextFloat() > 0.2) tiles = new ArrayList<>(this.environment.getPlantMap().getNotPreferredTiles());
+        else                                tiles = new ArrayList<>(this.environment.getPlantMap().getPreferredTiles());
+
+        Plant plant = new Plant(this.environment);
+        int idx = new Random().nextInt(tiles.size());
+        plant.setPos(tiles.get(idx));
+
+        // can iterate many times if there are only few empty places left
+        while (!this.environment.placePlant(plant) && tiles.size() > 1) {
+            tiles.remove(idx);
+            idx = new Random().nextInt(tiles.size());
+            plant.setPos(tiles.get(idx));
+
         }
     }
 

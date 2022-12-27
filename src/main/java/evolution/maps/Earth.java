@@ -9,7 +9,7 @@ public class Earth extends AnimalMap {
 
     @Override
     public void update(Event event) {
-        // TODO update shouldn't do anything?
+
     }
 
     @Override

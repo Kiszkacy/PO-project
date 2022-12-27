@@ -2,6 +2,7 @@ package evolution.events;
 
 import evolution.main.Creature;
 import evolution.main.Eatable;
+import java.util.Objects;
 
 public class ConsumeEvent implements Event {
 
@@ -31,5 +32,20 @@ public class ConsumeEvent implements Event {
 
     public Creature getBy() {
         return this.by;
+    }
+
+    // hash & equals
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        ConsumeEvent that = (ConsumeEvent) o;
+        return Objects.equals(this.what, that.what) && Objects.equals(this.by, that.by);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(this.what, this.by);
     }
 }

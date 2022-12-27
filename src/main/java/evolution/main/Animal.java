@@ -3,24 +3,18 @@ package evolution.main;
 import evolution.brains.Brain;
 import evolution.events.*;
 import evolution.genomes.Genome;
-import evolution.util.Color;
-import evolution.util.Config;
-import evolution.util.Direction;
-import evolution.util.Vector2;
+import evolution.util.*;
 import java.util.LinkedList;
 import java.util.Objects;
 import java.util.Random;
-
-import static evolution.util.EasyPrint.p;
-import static evolution.util.EasyPrint.pcol;
 
 public class Animal implements Creature, Mappable {
 
     private Vector2 pos;
     private Direction dir;
-    private Brain brain;
+    private final Brain brain;
     private int energy;
-    private Environment environment;
+    private final Environment environment;
     private final LinkedList<Observer> observers = new LinkedList<>();
 
     // overrides
@@ -38,8 +32,8 @@ public class Animal implements Creature, Mappable {
 
     /**
      * Asks environment whether the food is available to animal,
-     * if yes calls eat method and returns true
-     * otherwise returns false
+     * if yes calls eat method
+     * @return true if food is available, false otherwise
      */
     @Override
     public boolean lookForFood() {
@@ -60,8 +54,8 @@ public class Animal implements Creature, Mappable {
 
     /**
      *  Checks if animal has enough energy to reproduce and if there is mate on its position
-     *  if yes calls reproduce method and return true otherwise returns false
-     * @return if child
+     *  if yes calls reproduce method
+     * @return true if mate was found, false otherwise
      */
     @Override
     public boolean lookForMate() {
@@ -83,7 +77,7 @@ public class Animal implements Creature, Mappable {
     public Creature reproduce(Creature with) {
         try{
             // create new child components
-            double genomeRatio = (((Animal)with).energy*1.0f)/(this.energy + ((Animal)with).energy);
+            double genomeRatio = (((Animal)with).energy*1.0)/(this.energy + ((Animal)with).energy);
             Random rd = new Random();
             Genome childGenome = this.brain.getGenome().copy().mix(((Animal) with).brain.getGenome(), genomeRatio, rd.nextBoolean());
             childGenome.mutate(rd.nextInt(Config.getMutationCount().y-Config.getMutationCount().x) + Config.getMutationCount().x);
@@ -96,12 +90,8 @@ public class Animal implements Creature, Mappable {
             // notify observers
             this.notify(new ReproduceEvent(this, with, child));
             return child;
-
         } catch (Exception e) {
-            pcol(Color.RED, e.getMessage());
-            pcol(Color.RED, "at: " + e.getStackTrace()[0].getClassName());
-            pcol(Color.RED, "inside: " + e.getStackTrace()[0].getMethodName());
-            pcol(Color.RED, "line: " + e.getStackTrace()[0].getLineNumber());
+            ExceptionHandler.printCriticalInfo(e);
             throw new RuntimeException(String.format("problem creating object of class: '%s'", Config.getBrainType()));
         }
     }
@@ -123,6 +113,7 @@ public class Animal implements Creature, Mappable {
         return this.observers.remove(observer);
     }
 
+
     @Override
     public void notify(Event event) {
         for(Observer o : observers) {
@@ -132,11 +123,11 @@ public class Animal implements Creature, Mappable {
 
     @Override
     public String toString() {
-        // DEBUG
         return String.format("<genome:'%s'; energy:'%d'; at %s>", this.brain.getGenome(), this.energy, this.pos);
     }
 
     // constructors
+
     public Animal(Environment environment) {
         this.pos = Vector2.ZERO();
         this.dir = Direction.values()[new Random().nextInt(Direction.size())];

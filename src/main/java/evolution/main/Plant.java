@@ -8,11 +8,15 @@ import evolution.util.Vector2;
 import java.util.LinkedList;
 import java.util.Objects;
 
+/**
+ * Class acting as a basic plant. Can be placed, eaten and has predefined nutritional value.
+ */
 public class Plant implements Eatable, Mappable {
 
     private Vector2 pos;
     private int nutritionalValue;
     private LinkedList<Observer> observers = new LinkedList<>();
+    private final Environment environment;
 
     // overrides
 
@@ -47,24 +51,31 @@ public class Plant implements Eatable, Mappable {
 
     // constructors
 
-    public Plant() {
+    public Plant(Environment environment) {
         this.pos = Vector2.ZERO();
         this.nutritionalValue = Config.getPlantNutritionalValue();
+        this.environment = environment;
     }
 
-    public Plant(Vector2 pos) {
+
+    public Plant(Environment environment, Vector2 pos) {
         this.pos = pos;
         this.nutritionalValue = Config.getPlantNutritionalValue();
+        this.environment = environment;
     }
 
-    public Plant(int nutritionalValue) {
+
+    public Plant(Environment environment, int nutritionalValue) {
         this.pos = Vector2.ZERO();
         this.nutritionalValue = nutritionalValue;
+        this.environment = environment;
     }
 
-    public Plant(Vector2 pos, int nutritionalValue) {
+
+    public Plant(Environment environment, Vector2 pos, int nutritionalValue) {
         this.pos = pos;
         this.nutritionalValue = nutritionalValue;
+        this.environment = environment;
     }
 
     // getters/setters
@@ -91,11 +102,11 @@ public class Plant implements Eatable, Mappable {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Plant plant = (Plant) o;
-        return nutritionalValue == plant.nutritionalValue && pos.equals(plant.pos);
+        return this.nutritionalValue == plant.nutritionalValue && this.pos.equals(plant.pos);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(pos);
+        return Objects.hash(this.pos);
     }
 }
