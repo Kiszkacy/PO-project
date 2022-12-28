@@ -15,7 +15,7 @@ public class App {
     }
 
 
-    private void init() throws Exception {
+    public void init() throws Exception {
         this.loadConfig();
         this.world = new World();
     }
@@ -29,11 +29,6 @@ public class App {
 
     public App(String configPath) {
         this.configPath = configPath;
-        try {
-            this.init();
-        } catch (Exception e) {
-            ExceptionHandler.printCriticalInfo(e);
-        }
     }
 
     // getters/setters

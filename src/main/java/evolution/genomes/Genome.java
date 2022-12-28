@@ -36,9 +36,8 @@ public abstract class Genome {
 
         int left = fromLeft ? 1 : 0;
         int swapCount = (int)Math.round(ratio * this.size);
-
         for(int i = 0; i < swapCount; i++)
-            this.genes[i + (1-left)*(this.size-swapCount)] = with.getGene(i);
+            this.genes[i + (1-left)*(this.size-swapCount)] = with.getGene(i + (1-left)*(this.size-swapCount));
 
         return this;
     }

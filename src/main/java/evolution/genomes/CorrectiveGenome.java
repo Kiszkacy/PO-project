@@ -1,6 +1,7 @@
 package evolution.genomes;
 
 import evolution.util.Direction;
+import java.util.LinkedList;
 import java.util.Random;
 
 /**
@@ -19,8 +20,13 @@ public class CorrectiveGenome extends Genome {
     @Override
     public Genome mutate(int times) throws RuntimeException {
         if (times < 0 || times > this.getSize()) throw new RuntimeException(String.format("invalid mutate() 'times' argument value: '%s' (must be between 0 and gene's size)", times));
+
+        LinkedList<Integer> mutated = new LinkedList<>(); // holds indexes of already mutated genes
         for(int i = 0; i < times; i++) {
             int picked = new Random().nextInt(this.size);
+            while (mutated.contains(picked)) picked = new Random().nextInt(this.size);
+            mutated.push(picked);
+
             Direction dir = Direction.values()[this.genes[picked]];
             if (new Random().nextBoolean()) dir.next();
             else                            dir.prev();

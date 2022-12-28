@@ -1,6 +1,7 @@
 package evolution.brains;
 
 import evolution.genomes.Genome;
+import evolution.memories.Memory;
 import evolution.util.Config;
 import java.util.Objects;
 import java.util.Random;
@@ -10,6 +11,7 @@ import java.util.Random;
  * result in completely different behavior.
  */
 public abstract class Brain {
+    protected Memory memory;
     protected Genome genome;
     protected int activeGene;
 
@@ -33,7 +35,8 @@ public abstract class Brain {
 
     // constructors
 
-    public Brain() {
+    public Brain(Memory memory) {
+        this.memory = memory;
         try {
             this.genome = (Genome)Class.forName("evolution.genomes."+Config.getGenomeType()).getDeclaredConstructor().newInstance();
         } catch (Exception e) {
@@ -43,13 +46,15 @@ public abstract class Brain {
     }
 
 
-    public Brain(Genome genome) {
+    public Brain(Memory memory, Genome genome) {
+        this.memory = memory;
         this.genome = genome;
         this.activeGene = new Random().nextInt(this.genome.getSize());
     }
 
 
-    public Brain(Genome genome, int activeGene) {
+    public Brain(Memory memory, Genome genome, int activeGene) {
+        this.memory = memory;
         this.genome = genome;
         this.activeGene = activeGene;
     }
@@ -63,6 +68,11 @@ public abstract class Brain {
 
     public Genome getGenome() {
         return this.genome;
+    }
+
+
+    public Memory getMemory() {
+        return this.memory;
     }
 
     // hash & equals

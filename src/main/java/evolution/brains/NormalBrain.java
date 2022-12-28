@@ -1,6 +1,7 @@
 package evolution.brains;
 
 import evolution.genomes.Genome;
+import evolution.memories.Memory;
 
 public class NormalBrain extends Brain {
 
@@ -20,22 +21,22 @@ public class NormalBrain extends Brain {
      */
     @Override
     public Brain copy() {
-        return new NormalBrain(this.genome.copy(), this.activeGene);
+        return new NormalBrain(this.memory.copy(), this.genome.copy(), this.activeGene);
     }
 
     // constructors
 
-    public NormalBrain() {
-        super();
+    public NormalBrain(Memory memory) {
+        super(memory);
     }
 
 
-    public NormalBrain(Genome genome) {
-        super(genome);
+    public NormalBrain(Memory memory, Genome genome) {
+        super(memory, genome);
     }
 
 
-    public NormalBrain(Genome genome, int activeGene) {
-        super(genome, activeGene);
+    public NormalBrain(Memory memory, Genome genome, int activeGene) {
+        super(memory, genome, activeGene);
     }
 }

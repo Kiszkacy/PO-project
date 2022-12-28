@@ -10,9 +10,10 @@ public interface Environment {
     /**
      * Returns information about food availability at a given position.
      * @param where position where food is searched at
+     * @param candidate creature looking for a food
      * @return true if there's a food
      */
-    boolean isFoodAt(Vector2 where);
+    boolean isFoodAt(Vector2 where, Creature candidate);
 
     /**
      * Returns information if there's another creature also looking for a mate at a given position.
@@ -25,9 +26,10 @@ public interface Environment {
     /**
      * Returns food from a given position.
      * @param from given position
+     * @param candidate creature looking for a food
      * @return food located at that position
      */
-    Eatable getFood(Vector2 from);
+    Eatable getFood(Vector2 from, Creature candidate);
 
     /**
      * Returns creature which is also looking for a mate at a given position.

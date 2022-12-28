@@ -8,31 +8,33 @@ import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.net.URL;
 
+import static evolution.util.EasyPrint.pcol;
+
 /**
  * Singleton pattern. Loaded once at start of the simulation. Holds all information about simulation's settings.
  */
-public class Config { // TODO threadLocal
+public class Config {
 
-    private static final String version = "1.0"; // current version of config file
-    private static Config instance = null;
-    private Vector2 mapSize;
-    private String animalMapType;
-    private int startingPlantCount;
-    private int plantNutritionalValue;
-    private int plantGrowCount;
-    private String plantMapType;
-    private int startingAnimalCount;
-    private int startingAnimalEnergy;
-    private int reproduceRequiredEnergy;
-    private int reproduceEnergy;
-    private Vector2 mutationCount;
-    private String genomeType;
-    private int genomeSize;
-    private String brainType;
+    private static final ThreadLocal<String> version = ThreadLocal.withInitial(() -> "1.0"); // current version of config file
+    private static ThreadLocal<Config> instance = null;
+    private ThreadLocal<Vector2> mapSize = new ThreadLocal<>();
+    private ThreadLocal<String> animalMapType = new ThreadLocal<>();
+    private ThreadLocal<Integer> startingPlantCount = new ThreadLocal<>();
+    private ThreadLocal<Integer> plantNutritionalValue = new ThreadLocal<>();
+    private ThreadLocal<Integer> plantGrowCount = new ThreadLocal<>();
+    private ThreadLocal<String> plantMapType = new ThreadLocal<>();
+    private ThreadLocal<Integer> startingAnimalCount = new ThreadLocal<>();
+    private ThreadLocal<Integer> startingAnimalEnergy = new ThreadLocal<>();
+    private ThreadLocal<Integer> reproduceRequiredEnergy = new ThreadLocal<>();
+    private ThreadLocal<Integer> reproduceEnergy = new ThreadLocal<>();
+    private ThreadLocal<Vector2> mutationCount = new ThreadLocal<>();
+    private ThreadLocal<String> genomeType = new ThreadLocal<>();
+    private ThreadLocal<Integer> genomeSize = new ThreadLocal<>();
+    private ThreadLocal<String> brainType = new ThreadLocal<>();
 
 
     private static void createInstance() {
-        instance = new Config();
+        instance = ThreadLocal.withInitial(() -> new Config());
     }
 
 
@@ -47,37 +49,38 @@ public class Config { // TODO threadLocal
         // create JSONObject instance
         JSONObject obj = (JSONObject) parser.parse(new FileReader(url.getPath()));
         // check file version
-        if (!version.equals(obj.get("version"))) throw new RuntimeException(String.format("outdated config file, version: '%s', expected: '%s'", obj.get("version"), version));
+        if (!version.get().equals(obj.get("version"))) throw new RuntimeException(String.format("outdated config file, version: '%s', expected: '%s'", obj.get("version"), version));
         // load settings
         JSONObject settings = (JSONObject) obj.get("settings");
         JSONArray mapSize = (JSONArray) settings.get("mapSize");
-        instance.mapSize = new Vector2((int) (long) mapSize.get(0), (int) (long) mapSize.get(1));
-        instance.animalMapType = (String) settings.get("animalMapType");
-        instance.startingPlantCount = (int) (long) settings.get("startingPlantCount");
-        instance.plantNutritionalValue = (int) (long) settings.get("plantNutritionalValue");
-        instance.plantGrowCount = (int) (long) settings.get("plantGrowCount");
-        instance.plantMapType = (String) settings.get("plantMapType");
-        instance.startingAnimalCount = (int) (long) settings.get("startingAnimalCount");
-        instance.startingAnimalEnergy = (int) (long) settings.get("startingAnimalEnergy");
-        instance.reproduceRequiredEnergy = (int) (long) settings.get("reproduceRequiredEnergy");
-        instance.reproduceEnergy = (int) (long) settings.get("reproduceEnergy");
+        instance.get().mapSize.set(new Vector2((int) (long) mapSize.get(0), (int) (long) mapSize.get(1)));
+        instance.get().animalMapType.set((String) settings.get("animalMapType"));
+        instance.get().startingPlantCount.set((int) (long) settings.get("startingPlantCount"));
+        instance.get().plantNutritionalValue.set((int) (long) settings.get("plantNutritionalValue"));
+        instance.get().plantGrowCount.set((int) (long) settings.get("plantGrowCount"));
+        instance.get().plantMapType.set((String) settings.get("plantMapType"));
+        instance.get().startingAnimalCount.set((int) (long) settings.get("startingAnimalCount"));
+        instance.get().startingAnimalEnergy.set((int) (long) settings.get("startingAnimalEnergy"));
+        instance.get().reproduceRequiredEnergy.set((int) (long) settings.get("reproduceRequiredEnergy"));
+        instance.get().reproduceEnergy.set((int) (long) settings.get("reproduceEnergy"));
         JSONArray mutationCount = (JSONArray) settings.get("mutationCount");
-        instance.mutationCount = new Vector2((int) (long) mutationCount.get(0), (int) (long) mutationCount.get(1));
-        instance.genomeType = (String) settings.get("genomeType");
-        instance.genomeSize = (int) (long) settings.get("genomeSize");
-        instance.brainType = (String) settings.get("brainType");
+        instance.get().mutationCount.set(new Vector2((int) (long) mutationCount.get(0), (int) (long) mutationCount.get(1)));
+        instance.get().genomeType.set((String) settings.get("genomeType"));
+        instance.get().genomeSize.set((int) (long) settings.get("genomeSize"));
+        instance.get().brainType.set((String) settings.get("brainType"));
     }
 
     // overrides
 
+    @Override
     public String toString() {
         return String.format("CONFIG: | %s %s %s %s %s %s %s %s %s %s %s %s %s %s |",
-                instance.mapSize, instance.animalMapType, instance.startingPlantCount,
-                instance.plantNutritionalValue, instance.plantGrowCount, instance.plantMapType,
-                instance.startingAnimalCount, instance.startingAnimalEnergy,
-                instance.reproduceRequiredEnergy, instance.reproduceEnergy,
-                instance.mutationCount, instance.genomeType, instance.genomeSize,
-                instance.brainType);
+                instance.get().mapSize.get(), instance.get().animalMapType.get(), instance.get().startingPlantCount.get(),
+                instance.get().plantNutritionalValue.get(), instance.get().plantGrowCount.get(), instance.get().plantMapType.get(),
+                instance.get().startingAnimalCount.get(), instance.get().startingAnimalEnergy.get(),
+                instance.get().reproduceRequiredEnergy.get(), instance.get().reproduceEnergy.get(),
+                instance.get().mutationCount.get(), instance.get().genomeType.get(), instance.get().genomeSize.get(),
+                instance.get().brainType.get());
     }
 
     // constructors
@@ -89,72 +92,72 @@ public class Config { // TODO threadLocal
     // getters/setters
 
     public static Vector2 getMapSize() {
-        return instance.mapSize;
+        return instance.get().mapSize.get();
     }
 
 
     public static String getAnimalMapType() {
-        return instance.animalMapType;
+        return instance.get().animalMapType.get();
     }
 
 
     public static int getStartingPlantCount() {
-        return instance.startingPlantCount;
+        return instance.get().startingPlantCount.get();
     }
 
 
     public static int getPlantNutritionalValue() {
-        return instance.plantNutritionalValue;
+        return instance.get().plantNutritionalValue.get();
     }
 
 
     public static int getPlantGrowCount() {
-        return instance.plantGrowCount;
+        return instance.get().plantGrowCount.get();
     }
 
 
     public static String getPlantMapType() {
-        return instance.plantMapType;
+        return instance.get().plantMapType.get();
     }
 
 
     public static int getReproduceRequiredEnergy() {
-        return instance.reproduceRequiredEnergy;
+        return instance.get().reproduceRequiredEnergy.get();
     }
 
 
     public static int getReproduceEnergy() {
-        return instance.reproduceEnergy;
+        return instance.get().reproduceEnergy.get();
     }
 
 
     public static int getStartingAnimalCount() {
-        return instance.startingAnimalCount;
+        return instance.get().startingAnimalCount.get();
     }
 
 
     public static int getStartingAnimalEnergy() {
-        return instance.startingAnimalEnergy;
+        return instance.get().startingAnimalEnergy.get();
     }
 
 
     public static Vector2 getMutationCount() {
-        return instance.mutationCount;
+        return instance.get().mutationCount.get();
     }
 
 
     public static String getGenomeType() {
-        return instance.genomeType;
+        return instance.get().genomeType.get();
     }
 
 
     public static int getGenomeSize() {
-        return instance.genomeSize;
+        return instance.get().genomeSize.get();
     }
 
 
     public static String getBrainType() {
-        return instance.brainType;
+        return instance.get().brainType.get();
     } 
 }
 

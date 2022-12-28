@@ -3,10 +3,14 @@ package evolution.main;
 import evolution.brains.Brain;
 import evolution.events.*;
 import evolution.genomes.Genome;
+import evolution.memories.AnimalMemory;
+import evolution.memories.Memory;
 import evolution.util.*;
 import java.util.LinkedList;
 import java.util.Objects;
 import java.util.Random;
+
+import static evolution.util.EasyPrint.pcol;
 
 public class Animal implements Creature, Mappable {
 
@@ -14,8 +18,16 @@ public class Animal implements Creature, Mappable {
     private Direction dir;
     private final Brain brain;
     private int energy;
+    private int aliveFor;
     private final Environment environment;
     private final LinkedList<Observer> observers = new LinkedList<>();
+
+    /**
+     * Increasing animal's age by one.
+     */
+    public void age() {
+        this.aliveFor += 1;
+    }
 
     // overrides
 
@@ -37,8 +49,8 @@ public class Animal implements Creature, Mappable {
      */
     @Override
     public boolean lookForFood() {
-        if(!this.environment.isFoodAt(this.pos)) return false;
-        this.eat(this.environment.getFood(this.pos));
+        if(!this.environment.isFoodAt(this.pos, this)) return false;
+        this.eat(this.environment.getFood(this.pos, this));
         return true;
     }
 
@@ -49,6 +61,7 @@ public class Animal implements Creature, Mappable {
     @Override
     public void eat(Eatable what) {
         this.setEnergy(this.energy+what.getNutritionalValue());
+        ((AnimalMemory)this.brain.getMemory()).setPlantsEaten(((AnimalMemory)this.brain.getMemory()).getPlantsEaten()+1);
         this.notify(new ConsumeEvent(what, this));
     }
 
@@ -80,8 +93,9 @@ public class Animal implements Creature, Mappable {
             double genomeRatio = (((Animal)with).energy*1.0)/(this.energy + ((Animal)with).energy);
             Random rd = new Random();
             Genome childGenome = this.brain.getGenome().copy().mix(((Animal) with).brain.getGenome(), genomeRatio, rd.nextBoolean());
-            childGenome.mutate(rd.nextInt(Config.getMutationCount().y-Config.getMutationCount().x) + Config.getMutationCount().x);
-            Brain childBrain = (Brain)Class.forName("evolution.brains."+Config.getBrainType()).getConstructor(Genome.class).newInstance(new Object[]{childGenome});
+            int mutationCount = Config.getMutationCount().y-Config.getMutationCount().x;
+            if (mutationCount != 0) childGenome.mutate(rd.nextInt(mutationCount) + Config.getMutationCount().x);
+            Brain childBrain = (Brain)Class.forName("evolution.brains."+Config.getBrainType()).getConstructor(Memory.class, Genome.class).newInstance(new Object[]{new AnimalMemory(), childGenome});
             // energy transfer
             this.setEnergy(this.energy-Config.getReproduceEnergy());
             ((Animal) with).setEnergy(((Animal) with).energy - Config.getReproduceEnergy());
@@ -89,6 +103,9 @@ public class Animal implements Creature, Mappable {
             Animal child = new Animal(this.environment, this.pos.copy(), childBrain, Config.getReproduceEnergy()*2);
             // notify observers
             this.notify(new ReproduceEvent(this, with, child));
+            // increase child count
+            ((AnimalMemory)this.brain.getMemory()).setChildrenCount(((AnimalMemory)this.brain.getMemory()).getChildrenCount()+1);
+
             return child;
         } catch (Exception e) {
             ExceptionHandler.printCriticalInfo(e);
@@ -132,11 +149,12 @@ public class Animal implements Creature, Mappable {
         this.pos = Vector2.ZERO();
         this.dir = Direction.values()[new Random().nextInt(Direction.size())];
         try {
-            this.brain = (Brain)Class.forName("evolution.brains."+Config.getBrainType()).getDeclaredConstructor().newInstance();
+            this.brain = (Brain)Class.forName("evolution.brains."+Config.getBrainType()).getConstructor(Memory.class).newInstance(new Object[]{new AnimalMemory()});
         } catch (Exception e) {
             throw new RuntimeException(String.format("brain type: '%s' not found", Config.getBrainType()));
         }
         this.energy = Config.getStartingAnimalEnergy();
+        this.aliveFor = 0;
         this.environment = environment;
     }
 
@@ -145,11 +163,12 @@ public class Animal implements Creature, Mappable {
         this.pos = pos;
         this.dir = Direction.values()[new Random().nextInt(Direction.size())];
         try {
-            this.brain = (Brain)Class.forName("evolution.brains."+Config.getBrainType()).getDeclaredConstructor().newInstance();
+            this.brain = (Brain)Class.forName("evolution.brains."+Config.getBrainType()).getConstructor(Memory.class).newInstance(new Object[]{new AnimalMemory()});
         } catch (Exception e) {
             throw new RuntimeException(String.format("brain type: '%s' not found", Config.getBrainType()));
         }
         this.energy = Config.getStartingAnimalEnergy();
+        this.aliveFor = 0;
         this.environment = environment;
     }
 
@@ -159,6 +178,7 @@ public class Animal implements Creature, Mappable {
         this.dir = Direction.values()[new Random().nextInt(Direction.size())];
         this.brain = brain;
         this.energy = Config.getStartingAnimalEnergy();
+        this.aliveFor = 0;
         this.environment = environment;
     }
 
@@ -168,6 +188,7 @@ public class Animal implements Creature, Mappable {
         this.dir = Direction.values()[new Random().nextInt(Direction.size())];
         this.brain = brain;
         this.energy = Config.getStartingAnimalEnergy();
+        this.aliveFor = 0;
         this.environment = environment;
     }
 
@@ -177,6 +198,7 @@ public class Animal implements Creature, Mappable {
         this.dir = Direction.values()[new Random().nextInt(Direction.size())];
         this.brain = brain;
         this.energy = energy;
+        this.aliveFor = 0;
         this.environment = environment;
     }
 
@@ -202,6 +224,21 @@ public class Animal implements Creature, Mappable {
         // checking this.energy > 0 to avoid using notify on already dead animal
         if (energy <= 0 && this.energy > 0) this.notify(new DeathEvent(this));
         this.energy = energy;
+    }
+
+
+    public int getAge() {
+        return this.aliveFor;
+    }
+
+
+    public void setAge(int age) {
+        this.aliveFor = age;
+    }
+
+
+    public Brain getBrain() {
+        return this.brain;
     }
 
 

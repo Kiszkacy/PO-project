@@ -2,7 +2,6 @@ package evolution.main;
 
 import evolution.util.Config;
 import evolution.util.Vector2;
-
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
@@ -37,6 +36,7 @@ public class World {
      */
     public void dayCycle() {
         this.environment.newDay();
+        this.animalsAge();
         this.animalsMove();
         this.animalsEat();
         this.animalsReproduce();
@@ -44,10 +44,18 @@ public class World {
     }
 
 
+    public void animalsAge() {
+        int size = this.environment.getAnimalMap().getObjects().size();
+        for(int i = 0; i < size; i++){
+            this.environment.getAnimalMap().getObjects().get(i).age();
+        }
+    }
+
+
     public void animalsMove() {
         int size = this.environment.getAnimalMap().getObjects().size();
         for (int i = size-1; i >= 0; i--) {
-            // Decreases expected size of list, if a case that animal died after moving and got deleted
+            // Decreases expected size of a list, in a case of animal dying right after moving
             this.environment.getAnimalMap().getObjects().get(i).move();
         }
     }
@@ -55,7 +63,7 @@ public class World {
 
     public void animalsEat() {
         int size = this.environment.getAnimalMap().getObjects().size();
-        for(int i = 0; i < size; i++){
+        for(int i = 0; i < size; i++) {
             this.environment.getAnimalMap().getObjects().get(i).lookForFood();
         }
     }
@@ -63,7 +71,7 @@ public class World {
 
     public void animalsReproduce() {
         int size = this.environment.getAnimalMap().getObjects().size();
-        for(int i = 0; i < size; i++){
+        for(int i = 0; i < size; i++) {
             this.environment.getAnimalMap().getObjects().get(i).lookForMate();
         }
     }

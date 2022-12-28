@@ -3,11 +3,13 @@ package evolution.main;
 import evolution.events.*;
 import evolution.maps.AnimalMap;
 import evolution.maps.PlantMap;
+import evolution.memories.AnimalMemory;
 import evolution.util.Color;
 import evolution.util.Config;
 import evolution.util.Vector2;
 import java.util.Arrays;
 import java.util.LinkedList;
+import java.util.Random;
 
 /**
  * Communicates with all organisms alive in simulation. In control of maps containing animals' and plants'
@@ -35,6 +37,22 @@ public class WorldEnvironment implements Environment, DeathObserver, MoveObserve
     public void newDay() {
         for(boolean[] row : this.mateAvailability)
             Arrays.fill(row, true);
+
+        // sort animals by predefined conditions so isFoodAt and isAnimalAt methods can easily check if animal is the most powerful creature on that tile
+        for(int y = 0; y < this.size.y; y++) {
+            for(int x = 0; x < this.size.x; x++) {
+                LinkedList<Animal> animals = this.animalMap.getObjectsAt(new Vector2(x, y));
+                animals.sort((a1, a2) -> {
+                    if (a1.getEnergy() > a2.getEnergy()) return 1;
+                    else if (a1.getEnergy() < a2.getEnergy()) return -1;
+                    if (a1.getAge() > a2.getAge()) return 1;
+                    else if (a1.getAge() < a2.getAge()) return -1;
+                    if (((AnimalMemory)a1.getBrain().getMemory()).getChildrenCount() > ((AnimalMemory)a2.getBrain().getMemory()).getChildrenCount()) return 1;
+                    else if (((AnimalMemory)a1.getBrain().getMemory()).getChildrenCount() < ((AnimalMemory)a2.getBrain().getMemory()).getChildrenCount()) return -1;
+                    return new Random().nextInt(3)-1; // random -1,0,1
+                });
+            }
+        }
     }
 
     /**
@@ -84,8 +102,12 @@ public class WorldEnvironment implements Environment, DeathObserver, MoveObserve
     // overrides
 
     @Override
-    public boolean isFoodAt(Vector2 where) {
-        return !this.plantMap.isEmpty(where);
+    public boolean isFoodAt(Vector2 where, Creature candidate) {
+        if (this.plantMap.isEmpty(where)) return false;
+        LinkedList<Animal> animals = this.animalMap.getObjectsAt(where);
+        if (animals.indexOf((Animal)candidate) > 0) return false;
+
+        return true;
     }
 
     @Override
@@ -94,29 +116,33 @@ public class WorldEnvironment implements Environment, DeathObserver, MoveObserve
         if (this.animalMap.sizeOf(where) <= 1) return false; // check if there are at least 2 animals
 
         LinkedList<Animal> animals = this.animalMap.getObjectsAt(where);
-        animals.sort((a1, a2) -> { // TODO should this be implemented in animalMap insert/move ?
-            if (a1.getEnergy() > a2.getEnergy()) return -1;
-            else if (a1.getEnergy() < a2.getEnergy()) return 1;
-            return 0;
-        });
         int idx = animals.indexOf((Animal)candidate);
         if (idx >= 2) return false; // candidate must be in top 2
-
         if (animals.get(1-idx).getEnergy() < Config.getReproduceRequiredEnergy()) return false; // other animal must have required energy
+
         return true;
     }
 
     @Override
-    public Eatable getFood(Vector2 from) {
+    public Eatable getFood(Vector2 from, Creature candidate) {
+        if (this.plantMap.isEmpty(from)) return null;
+        LinkedList<Animal> animals = this.animalMap.getObjectsAt(from);
+        if (animals.indexOf((Animal)candidate) > 0) return null;
+
         return this.plantMap.getObjectsAt(from).getFirst();
     }
 
     @Override
     public Creature getMate(Vector2 from, Creature candidate) {
-        // everything already checked in isMateAt method
-        this.mateAvailability[from.y][from.x] = false;
+        if (!mateAvailability[from.y][from.x]) return null; // check if available
+        if (this.animalMap.sizeOf(from) <= 1) return null; // check if there are at least 2 animals
+
         LinkedList<Animal> animals = this.animalMap.getObjectsAt(from);
         int idx = animals.indexOf((Animal)candidate);
+        if (idx >= 2) return null; // candidate must be in top 2
+        if (animals.get(1-idx).getEnergy() < Config.getReproduceRequiredEnergy()) return null; // other animal must have required energy
+
+        this.mateAvailability[from.y][from.x] = false;
         return animals.get(1-idx);
     }
 
@@ -163,43 +189,44 @@ public class WorldEnvironment implements Environment, DeathObserver, MoveObserve
 
     public WorldEnvironment() {
         this.size = Config.getMapSize();
-
         try {
             this.plantMap = (PlantMap)Class.forName("evolution.maps."+Config.getPlantMapType()).getDeclaredConstructor().newInstance();
         } catch (Exception e) {
             throw new RuntimeException(String.format("plantMap type: '%s' not found", Config.getPlantMapType()));
         }
-
         try {
             this.animalMap = (AnimalMap)Class.forName("evolution.maps."+Config.getAnimalMapType()).getDeclaredConstructor().newInstance();
         } catch (Exception e) {
             throw new RuntimeException(String.format("animalMap type: '%s' not found", Config.getAnimalMapType()));
         }
-
         this.init();
     }
 
 
-    public WorldEnvironment(Vector2 size) { // TODO size exceptions
-        this.size = size;
+    public WorldEnvironment(Vector2 size) {
+        if (size.x <= 0 || size.y <= 0) throw new RuntimeException(String.format("WorldEnvironment size must be positive, received: '%s'", size));
+        if (size.x > Config.getMapSize().x || size.y > Config.getMapSize().y)
+            throw new RuntimeException(String.format("environment size must be equal or lower to map size, received: '%s' expected at most: '%s", size, Config.getMapSize()));
 
+        this.size = size;
         try {
             this.plantMap = (PlantMap)Class.forName("evolution.maps."+Config.getPlantMapType()).getDeclaredConstructor().newInstance();
         } catch (Exception e) {
             throw new RuntimeException(String.format("plantMap type: '%s' not found", Config.getPlantMapType()));
         }
-
         try {
             this.animalMap = (AnimalMap)Class.forName("evolution.maps."+Config.getAnimalMapType()).getDeclaredConstructor().newInstance();
         } catch (Exception e) {
             throw new RuntimeException(String.format("animalMap type: '%s' not found", Config.getAnimalMapType()));
         }
-
         this.init();
     }
 
 
     public WorldEnvironment(PlantMap plantMap, AnimalMap animalMap) {
+        if (!(plantMap.getSize().equals(animalMap.getSize())))
+            throw new RuntimeException(String.format("animalMap and plantMap must be of the same size, received: '%s' and '%s'", animalMap.getSize(), plantMap.getSize()));
+
         this.size = Config.getMapSize();
         this.plantMap = plantMap;
         this.animalMap = animalMap;
@@ -207,7 +234,13 @@ public class WorldEnvironment implements Environment, DeathObserver, MoveObserve
     }
 
 
-    public WorldEnvironment(Vector2 size, PlantMap plantMap, AnimalMap animalMap) { // TODO size exceptions
+    public WorldEnvironment(Vector2 size, PlantMap plantMap, AnimalMap animalMap) {
+        if (size.x <= 0 || size.y <= 0) throw new RuntimeException(String.format("WorldEnvironment size must be positive, received: '%s'", size));
+        if (!(plantMap.getSize().equals(animalMap.getSize())))
+            throw new RuntimeException(String.format("animalMap and plantMap must be of the same size, received: '%s' and '%s'", animalMap.getSize(), plantMap.getSize()));
+        if (size.x > animalMap.getSize().x || size.y > animalMap.getSize().y)
+            throw new RuntimeException(String.format("environment size must be equal or lower to map size, received: '%s' expected at most: '%s", size, animalMap.getSize()));
+
         this.size = size;
         this.plantMap = plantMap;
         this.animalMap = animalMap;

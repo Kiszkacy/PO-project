@@ -1,6 +1,7 @@
 package evolution.brains;
 
 import evolution.genomes.Genome;
+import evolution.memories.Memory;
 import java.util.Random;
 
 public class RandomBrain extends Brain {
@@ -28,22 +29,22 @@ public class RandomBrain extends Brain {
      */
     @Override
     public Brain copy() {
-        return new RandomBrain(this.genome.copy(), this.activeGene);
+        return new RandomBrain(this.memory.copy(), this.genome.copy(), this.activeGene);
     }
 
     // constructors
 
-    public RandomBrain() {
-        super();
+    public RandomBrain(Memory memory) {
+        super(memory);
     }
 
 
-    public RandomBrain(Genome genome) {
-        super(genome);
+    public RandomBrain(Memory memory, Genome genome) {
+        super(memory, genome);
     }
 
 
-    public RandomBrain(Genome genome, int activeGene) {
-        super(genome, activeGene);
+    public RandomBrain(Memory memory, Genome genome, int activeGene) {
+        super(memory, genome, activeGene);
     }
 }
