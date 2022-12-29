@@ -16,7 +16,7 @@ import static evolution.util.EasyPrint.pcol;
 public class Config {
 
     private static final ThreadLocal<String> version = ThreadLocal.withInitial(() -> "1.0"); // current version of config file
-    private static ThreadLocal<Config> instance = null;
+    private static ThreadLocal<Config> instance = ThreadLocal.withInitial(() -> new Config());
     private ThreadLocal<Vector2> mapSize = new ThreadLocal<>();
     private ThreadLocal<String> animalMapType = new ThreadLocal<>();
     private ThreadLocal<Integer> startingPlantCount = new ThreadLocal<>();
@@ -39,7 +39,6 @@ public class Config {
 
 
     public static void loadConfig(String path) throws Exception {
-        createInstance();
         // create json parser
         JSONParser parser = new JSONParser();
         // look for file in resources directory

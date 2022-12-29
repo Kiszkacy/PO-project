@@ -7,31 +7,62 @@ import static evolution.util.EasyPrint.pcol;
 
 public class SimulationThread implements Runnable {
 
-    private int tick;
-    private final int targetTick;
-    private final int ticksPerSec;
-    private final App app;
+    protected int tick;
+    protected final int targetTick;
+    protected final int ticksPerSec;
+    protected final App app;
+    boolean running = true;
+    double duration = 0;
 
     // overrides
 
-    @Override
     public void run() {
         pcol(Color.WEAK_GREEN, String.format("Thread with settings: <targetTick: '%s'>, <ticksPerSec: '%s'> has been successfully created!", this.targetTick, this.ticksPerSec));
         long startTime = System.nanoTime();
         try {
             this.app.init();
             pcol(Color.GREEN, String.format("Thread with settings: <targetTick: '%s'>, <ticksPerSec: '%s'> has successfully started working!", this.targetTick, this.ticksPerSec));
-            startTime = System.nanoTime();
-            while (tick != targetTick) { // kill itself when tick == targetTick
+        } catch (Exception e) {
+            ExceptionHandler.printCriticalInfo(e);
+        }
+
+        while (tick != targetTick){
+            if (running) runSimulation();
+            try {
+                Thread.sleep((long) 1.0);
+            } catch (InterruptedException e) {
+                throw new RuntimeException(e);
+            }
+        }
+    }
+
+
+    public void runSimulation(){
+        double startTime = System.nanoTime();
+        try {
+            while (tick != targetTick && running) { // kill itself when tick == targetTick
                 app.tick();
                 tick++;
                 Thread.sleep((long) (Math.ceil(1000.0 / this.ticksPerSec)));
             }
-        } catch (Exception e) {
+        }catch (Exception e) {
             ExceptionHandler.printCriticalInfo(e);
         }
         long endTime = System.nanoTime();
-        double duration = (endTime-startTime) / 1000000000.0;
+        duration += (endTime-startTime) / 1000000000.0;
+        if(tick == targetTick) endingMessages();
+    }
+
+    public void resumeThread(){
+        running = true;
+    }
+
+    public void pauseThread(){
+        running = false;
+    }
+
+    protected void endingMessages(){
+        long endTime = System.nanoTime();
         pcol(Color.BLUE, String.format("Thread with settings: <targetTick: '%s'>, <ticksPerSec: '%s'> has successfully stopped!", this.targetTick, this.ticksPerSec));
         pcol(Color.WEAK_BLUE, String.format("Thread with settings: <targetTick: '%s'>, <ticksPerSec: '%s'> report: '%s' ticks done in '%s's: performance: '%s' ticks per second",
                 this.targetTick, this.ticksPerSec, this.targetTick, duration, this.targetTick/duration));
@@ -52,5 +83,9 @@ public class SimulationThread implements Runnable {
         this.targetTick = targetTick;
         this.ticksPerSec = ticksPerSec;
         this.app = app;
+    }
+
+    public boolean isRunning() {
+        return running;
     }
 }
