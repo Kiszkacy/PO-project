@@ -1,7 +1,6 @@
 package evolution;
 
 import evolution.util.Color;
-import evolution.util.Config;
 import evolution.util.ExceptionHandler;
 import static evolution.util.EasyPrint.pcol;
 
@@ -10,7 +9,7 @@ public class SimulationThread implements Runnable {
     protected int tick;
     protected final int targetTick;
     protected final int ticksPerSec;
-    protected final App app;
+    protected final Simulation simulation;
     boolean running = true;
     double duration = 0;
 
@@ -20,7 +19,7 @@ public class SimulationThread implements Runnable {
         pcol(Color.WEAK_GREEN, String.format("Thread with settings: <targetTick: '%s'>, <ticksPerSec: '%s'> has been successfully created!", this.targetTick, this.ticksPerSec));
         long startTime = System.nanoTime();
         try {
-            this.app.init();
+            this.simulation.init();
             pcol(Color.GREEN, String.format("Thread with settings: <targetTick: '%s'>, <ticksPerSec: '%s'> has successfully started working!", this.targetTick, this.ticksPerSec));
         } catch (Exception e) {
             ExceptionHandler.printCriticalInfo(e);
@@ -41,7 +40,7 @@ public class SimulationThread implements Runnable {
         double startTime = System.nanoTime();
         try {
             while (tick != targetTick && running) { // kill itself when tick == targetTick
-                app.tick();
+                simulation.tick();
                 tick++;
                 Thread.sleep((long) (Math.ceil(1000.0 / this.ticksPerSec)));
             }
@@ -70,19 +69,19 @@ public class SimulationThread implements Runnable {
 
     // constructors
 
-    public SimulationThread(App app, int ticksPerSec) {
+    public SimulationThread(Simulation simulation, int ticksPerSec) {
         this.tick = 0;
         this.targetTick = -1;
         this.ticksPerSec = ticksPerSec;
-        this.app = app;
+        this.simulation = simulation;
     }
 
 
-    public SimulationThread(App app, int targetTick, int ticksPerSec) {
+    public SimulationThread(Simulation simulation, int targetTick, int ticksPerSec) {
         this.tick = 0;
         this.targetTick = targetTick;
         this.ticksPerSec = ticksPerSec;
-        this.app = app;
+        this.simulation = simulation;
     }
 
     public boolean isRunning() {

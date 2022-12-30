@@ -1,7 +1,6 @@
 package evolution;
 
 import evolution.ui.SimulationGUI;
-import evolution.util.Color;
 import evolution.util.ExceptionHandler;
 
 
@@ -14,7 +13,7 @@ public class SimulationThreadForGui extends SimulationThread{
         double startTime = System.nanoTime();
         try {
             while (tick != targetTick && running) { // kill itself when tick == targetTick
-                app.tick();
+                simulation.tick();
                 tick++;
                 gui.show();
                 Thread.sleep((long) (Math.ceil(1000.0 / this.ticksPerSec)));
@@ -28,13 +27,13 @@ public class SimulationThreadForGui extends SimulationThread{
     }
 
 
-    public SimulationThreadForGui(App app, int ticksPerSec, SimulationGUI gui) {
-        super(app, ticksPerSec);
+    public SimulationThreadForGui(Simulation simulation, int ticksPerSec, SimulationGUI gui) {
+        super(simulation, ticksPerSec);
         this.gui = gui;
     }
 
-    public SimulationThreadForGui(App app, int targetTick, int ticksPerSec, SimulationGUI gui) {
-        super(app, targetTick, ticksPerSec);
+    public SimulationThreadForGui(Simulation simulation, int targetTick, int ticksPerSec, SimulationGUI gui) {
+        super(simulation, targetTick, ticksPerSec);
         this.gui = gui;
     }
 

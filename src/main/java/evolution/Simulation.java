@@ -2,9 +2,8 @@ package evolution;
 
 import evolution.main.World;
 import evolution.util.Config;
-import evolution.util.ExceptionHandler;
 
-public class App {
+public class Simulation {
 
     private String configPath;
     private World world;
@@ -27,7 +26,7 @@ public class App {
 
     // constructors
 
-    public App(String configPath) {
+    public Simulation(String configPath) {
         this.configPath = configPath;
     }
 

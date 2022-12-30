@@ -1,6 +1,6 @@
 package evolution.ui;
 
-import evolution.App;
+import evolution.Simulation;
 import evolution.SimulationThreadForGui;
 import evolution.main.World;
 import javafx.application.Platform;
@@ -14,17 +14,17 @@ import javafx.stage.Stage;
 import static evolution.util.EasyPrint.p;
 
 public class SimulationGUI{
-    App app;
+    Simulation simulation;
     final Thread thread;
-    final SimulationThreadForGui simulation;
+    final SimulationThreadForGui simulationThread;
     Text field = new Text("0");
     GridPane grid;
 
 
     public SimulationGUI(String configFile, int tickCount, int ticksPerSec){
-        app = new App(configFile);
-        simulation = new SimulationThreadForGui(app, tickCount, ticksPerSec, this);
-        thread = new Thread(simulation);
+        simulation = new Simulation(configFile);
+        simulationThread = new SimulationThreadForGui(simulation, tickCount, ticksPerSec, this);
+        thread = new Thread(simulationThread);
         Stage stage = new Stage();
         stage.setTitle("My New Stage Title");
 
@@ -42,8 +42,8 @@ public class SimulationGUI{
     }
 
     public void updateScene(){
-        World world = app.getWorld();
-        field.setText(Integer.toString(app.getWorld().getEnvironment().getAnimalMap().getObjects().size()));
+        World world = simulation.getWorld();
+        field.setText(Integer.toString(simulation.getWorld().getEnvironment().getAnimalMap().getObjects().size()));
     }
 
     private Scene createScene(){
@@ -51,12 +51,12 @@ public class SimulationGUI{
         grid.setAlignment(Pos.CENTER);
         grid.setHgap(10);
         grid.setVgap(10);
-        grid.add(field, 0, 0, 2, 1);
+        grid.add(field, 0, 0);
 
         Button start = new Button("Start/Stop");
         start.setOnAction(action -> {
-            if (simulation.isRunning()) simulation.pauseThread();
-            else simulation.resumeThread();
+            if (simulationThread.isRunning()) simulationThread.pauseThread();
+            else simulationThread.resumeThread();
 
         });
         grid.add(start, 1, 0);
