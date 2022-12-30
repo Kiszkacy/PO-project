@@ -157,6 +157,10 @@ public class Config {
 
     public static String getBrainType() {
         return instance.get().brainType.get();
-    } 
+    }
+
+    public static String getVersion(){
+        return version.get();
+    }
 }
 
