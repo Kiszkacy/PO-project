@@ -1,0 +1,19 @@
+{
+	"version": "1.0",
+	"settings": {
+		"mapSize": [40, 40],
+		"animalMapType": "Hell",
+		"startingPlantCount": 125,
+		"plantNutritionalValue": 10,
+		"plantGrowCount": 10,
+		"plantMapType": "ToxicCorpses",
+		"startingAnimalCount": 25,
+		"startingAnimalEnergy": 15,
+		"reproduceRequiredEnergy": 25,
+		"reproduceEnergy": 25,
+		"mutationCount": [0, 25],
+		"genomeType": "RandomGenome",
+		"genomeSize": 25,
+		"brainType": "RandomBrain"
+	}
+}

@@ -11,6 +11,7 @@ import java.util.Random;
  * result in completely different behavior.
  */
 public abstract class Brain {
+
     protected Memory memory;
     protected Genome genome;
     protected int activeGene;
@@ -82,7 +83,7 @@ public abstract class Brain {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Brain brain = (Brain) o;
-        return this.activeGene == brain.activeGene && this.genome.equals(brain.genome);
+        return this.activeGene == brain.activeGene && this.genome.equals(brain.genome) && this.memory.equals(brain.memory);
     }
 
     @Override

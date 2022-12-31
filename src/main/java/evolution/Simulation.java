@@ -3,6 +3,9 @@ package evolution;
 import evolution.main.World;
 import evolution.util.Config;
 
+/**
+ * Main simulation class. After calling init() method once can run using tick() method. One tick is equal to one in-simulation day.
+ */
 public class Simulation {
 
     private String configPath;
@@ -13,7 +16,10 @@ public class Simulation {
         world.dayCycle();
     }
 
-
+    /**
+     * This method is required to be called once before running the simulation.
+     * @throws Exception if something went wrong
+     */
     public void init() throws Exception {
         this.loadConfig();
         this.world = new World();

@@ -37,22 +37,6 @@ public class WorldEnvironment implements Environment, DeathObserver, MoveObserve
     public void newDay() {
         for(boolean[] row : this.mateAvailability)
             Arrays.fill(row, true);
-
-        // sort animals by predefined conditions so isFoodAt and isAnimalAt methods can easily check if animal is the most powerful creature on that tile
-        for(int y = 0; y < this.size.y; y++) {
-            for(int x = 0; x < this.size.x; x++) {
-                LinkedList<Animal> animals = this.animalMap.getObjectsAt(new Vector2(x, y));
-                animals.sort((a1, a2) -> {
-                    if (a1.getEnergy() > a2.getEnergy()) return 1;
-                    else if (a1.getEnergy() < a2.getEnergy()) return -1;
-                    if (a1.getAge() > a2.getAge()) return 1;
-                    else if (a1.getAge() < a2.getAge()) return -1;
-                    if (((AnimalMemory)a1.getBrain().getMemory()).getChildrenCount() > ((AnimalMemory)a2.getBrain().getMemory()).getChildrenCount()) return 1;
-                    else if (((AnimalMemory)a1.getBrain().getMemory()).getChildrenCount() < ((AnimalMemory)a2.getBrain().getMemory()).getChildrenCount()) return -1;
-                    return new Random().nextInt(3)-1; // random -1,0,1
-                });
-            }
-        }
     }
 
     /**

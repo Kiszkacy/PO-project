@@ -1,0 +1,106 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import java.lang.*?>
+<?import java.util.*?>
+<?import javafx.scene.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.*?>
+
+<!--fx:controller="evolution.gui.SimulationWindow"-->
+<AnchorPane xmlns="http://javafx.com/javafx"
+            xmlns:fx="http://javafx.com/fxml"
+            fx:controller="evolution.gui.SimulationWindowController"
+            prefHeight="720.0" prefWidth="1280.0" styleClass="root">
+    <HBox AnchorPane.topAnchor="0.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0">
+        <style>
+            -fx-padding: 6;
+            -fx-spacing: 8;
+        </style>
+<!--        LEWA STRONA-->
+        <VBox prefHeight="1920.0" prefWidth="360.0" minWidth="360.0">
+            <Label styleClass="title" maxWidth="Infinity" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" alignment="CENTER">Evolution</Label>
+            <HBox alignment="CENTER">
+                <Button fx:id="startButton" onAction="#startButtonHandler"></Button>
+            </HBox>
+<!--            STATYSTYKI SYMULACJI CONTAINER-->
+            <VBox fx:id="statsBox" prefHeight="960.0" prefWidth="360.0" styleClass="container" minHeight="280.0">
+                <Label styleClass="subtitle" maxWidth="Infinity" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" alignment="CENTER">Simulation stats</Label>
+                <HBox spacing="4">
+                    <Label>Animal count:</Label>
+                    <Label id="statAnimalCount"></Label>
+                </HBox>
+                <HBox spacing="4">
+                    <Label>Plant count:</Label>
+                    <Label id="statPlantCount"></Label>
+                </HBox>
+                <HBox spacing="4">
+                    <Label>Empty tiles count:</Label>
+                    <Label id="statEmptyTilesCount"></Label>
+                </HBox>
+                <HBox spacing="4">
+                    <Label minWidth="120.0" wrapText="true">Most common genome:</Label>
+                    <Label id="statMostCommonGenome" wrapText="true"></Label>
+                </HBox>
+                <HBox spacing="4">
+                    <Label minWidth="120.0" wrapText="true">Average animal energy:</Label>
+                    <Label id="statAverageAnimalEnergy" wrapText="true"></Label>
+                </HBox>
+                <HBox spacing="4">
+                    <Label minWidth="120.0" wrapText="true">Average animal lifespan:</Label>
+                    <Label id="statAverageAnimalLifespan" wrapText="true"></Label>
+                </HBox>
+            </VBox>
+<!--            INFO O ZWIERZAKU CONTAINER-->
+            <VBox fx:id="animalTrackBox" prefHeight="960.0" prefWidth="360.0" styleClass="container" minHeight="280.0">
+                <Label styleClass="subtitle" maxWidth="Infinity" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" alignment="CENTER">Tracked animal stats</Label>
+                <HBox spacing="4">
+                    <Label>At:</Label>
+                    <Label id="trackedAnimalPos"></Label>
+                </HBox>
+                <HBox spacing="4">
+                    <Label minWidth="120.0" wrapText="true">Genome:</Label>
+                    <Label id="trackedAnimalGenome" wrapText="true"></Label>
+                </HBox>
+                <HBox spacing="4">
+                    <Label>Active gene:</Label>
+                    <Label id="trackedAnimalActiveGene"></Label>
+                </HBox>
+                <HBox spacing="4">
+                    <Label>Energy:</Label>
+                    <Label id="trackedAnimalEnergy"></Label>
+                </HBox>
+                <HBox spacing="4">
+                    <Label>Plants eaten:</Label>
+                    <Label id="trackedAnimalPlantsEaten"></Label>
+                </HBox>
+                <HBox spacing="4">
+                    <Label>Children count:</Label>
+                    <Label id="trackedAnimalChildrenCount"></Label>
+                </HBox>
+                <HBox spacing="4">
+                    <Label>Age:</Label>
+                    <Label id="trackedAnimalAge"></Label>
+                </HBox>
+            </VBox>
+        </VBox>
+<!--        PRAWA STRONA-->
+        <VBox prefHeight="1920.0" prefWidth="3600.0" AnchorPane.topAnchor="0.0" maxWidth="+Infinity" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0">
+<!--            SYMULACJA-->
+            <GridPane fx:id="grid" prefHeight="1840.0" prefWidth="3600.0" styleClass="container" minWidth="360.0" minHeight="360.0">
+                <style>
+                    -fx-alignment: center;
+                </style>
+            </GridPane>
+<!--            GUZIKI POD-->
+            <HBox prefHeight="80.0" prefWidth="3600.0">
+                <HBox alignment="CENTER">
+                    <Button fx:id="mostCommonGenomeButton" onAction="#mostCommonGenomeButtonHandler">SHOW ANIMALS WITH TOP 1 GENE</Button>
+                </HBox>
+                <HBox alignment="CENTER">
+                    <Button fx:id="clearTrackingButton" onAction="#clearTrackingButtonHandler">STOP TRACKING</Button>
+                </HBox>
+            </HBox>
+        </VBox>
+    </HBox>
+</AnchorPane>

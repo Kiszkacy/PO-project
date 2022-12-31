@@ -1,0 +1,6 @@
+{
+    "animalMapType": ["Earth", "Hell"],
+    "plantMapType": ["WoodedEquator", "ToxicCorpses"],
+    "genomeType": ["CorrectiveGenome", "RandomGenome"],
+    "brainType": ["NormalBrain", "RandomBrain"]
+}

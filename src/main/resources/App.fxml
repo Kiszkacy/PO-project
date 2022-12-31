@@ -10,7 +10,7 @@
 
 <?import javafx.scene.text.Text?>
 <GridPane fx:id="grid"
-          fx:controller="evolution.ui.MainAppController"
+          fx:controller="evolution.gui.AppController"
           xmlns:fx="http://javafx.com/fxml" alignment="center" hgap="10" vgap="10">
     <padding><Insets top="25" right="25" bottom="25" left="25"/></padding>
     <Text text="Simulation configs"
@@ -23,13 +23,13 @@
             GridPane.columnIndex="2"
             GridPane.rowIndex="1"
     />
-    <Button fx:id="StartButton"
+    <Button fx:id="startButton"
             text="Start simulation"
             onAction="#runSimulationInstance"
             GridPane.columnIndex="1"
             GridPane.rowIndex="2"
     />
-    <Button fx:id="ClearButton"
+    <Button fx:id="clearButton"
             text="Clear settings"
             onAction="#clearAllSettings"
             GridPane.columnIndex="2"

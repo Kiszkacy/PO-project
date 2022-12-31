@@ -1,4 +1,4 @@
-package evolution.ui;
+package evolution.gui;
 
 import evolution.events.*;
 import evolution.genomes.Genome;
@@ -12,15 +12,26 @@ import java.util.*;
 
 public class SimulationTracker implements DeathObserver, ReproduceObserver {
 
-    private final World world;
+    private World world;
     private double averageLifespan;
     private int deathCount;
 
     /**
-     * This method is required to be called at the end of constructor.
+     * This method is required to be called once before using the tracker.
      */
     public void init() {
-        for(Animal a : world.getEnvironment().getAnimalMap().getObjects()) {
+        for(Animal a : this.world.getEnvironment().getAnimalMap().getObjects()) {
+            a.addObserver(this);
+        }
+    }
+
+    /**
+     * This method is required to be called once before using the tracker.
+     * @param world world instance from which information will be extracted
+     */
+    public void init(World world) {
+        this.world = world;
+        for(Animal a : this.world.getEnvironment().getAnimalMap().getObjects()) {
             a.addObserver(this);
         }
     }
@@ -67,9 +78,16 @@ public class SimulationTracker implements DeathObserver, ReproduceObserver {
 
     // constructors
 
+    public SimulationTracker() {
+        this.averageLifespan = 0;
+        this.deathCount = 0;
+    }
+
+
     public SimulationTracker(World world) {
+        this.averageLifespan = 0;
+        this.deathCount = 0;
         this.world = world;
-        this.init();
     }
 
     // getters/setters
@@ -102,7 +120,8 @@ public class SimulationTracker implements DeathObserver, ReproduceObserver {
     public ArrayList<Pair<Genome, Integer>> getGenomesCount() {
         // count occurrences
         HashMap<Genome, Integer> count = new HashMap<>();
-        for(Animal a : this.world.getEnvironment().getAnimalMap().getObjects()) {
+        LinkedList<Animal> animals = (LinkedList<Animal>)this.world.getEnvironment().getAnimalMap().getObjects().clone();
+        for(Animal a : animals) {
             Genome genome = a.getBrain().getGenome();
             Integer currentCount = count.get(genome);
             count.put(genome, (currentCount == null) ? 1 : currentCount+1);
@@ -128,7 +147,8 @@ public class SimulationTracker implements DeathObserver, ReproduceObserver {
 
     public double getAverageAnimalEnergy() {
         int sum = 0;
-        for(Animal a : this.world.getEnvironment().getAnimalMap().getObjects()) {
+        LinkedList<Animal> animals = (LinkedList<Animal>)this.world.getEnvironment().getAnimalMap().getObjects().clone();
+        for(Animal a : animals) {
             sum += a.getEnergy();
         }
 

@@ -1,8 +1,10 @@
 package evolution.main;
 
+import evolution.memories.AnimalMemory;
 import evolution.util.Config;
 import evolution.util.Vector2;
 import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Random;
 
@@ -38,6 +40,7 @@ public class World {
         this.environment.newDay();
         this.animalsAge();
         this.animalsMove();
+        this.sortAnimals();
         this.animalsEat();
         this.animalsReproduce();
         this.growPlants();
@@ -60,6 +63,26 @@ public class World {
         }
     }
 
+    /**
+     * Sorts animals by predefined conditions so environment.isFoodAt and environment.isAnimalAt methods
+     * can easily check if animal is the most powerful creature on given tile.
+     */
+    private void sortAnimals() {
+        for(int y = 0; y < this.environment.getSize().y; y++) {
+            for(int x = 0; x < this.environment.getSize().x; x++) {
+                LinkedList<Animal> animals = this.environment.getAnimalMap().getObjectsAt(new Vector2(x, y));
+                animals.sort((a1, a2) -> {
+                    if (a1.getEnergy() > a2.getEnergy()) return 1;
+                    else if (a1.getEnergy() < a2.getEnergy()) return -1;
+                    if (a1.getAge() > a2.getAge()) return 1;
+                    else if (a1.getAge() < a2.getAge()) return -1;
+                    if (((AnimalMemory)a1.getBrain().getMemory()).getChildrenCount() > ((AnimalMemory)a2.getBrain().getMemory()).getChildrenCount()) return 1;
+                    else if (((AnimalMemory)a1.getBrain().getMemory()).getChildrenCount() < ((AnimalMemory)a2.getBrain().getMemory()).getChildrenCount()) return -1;
+                    return new Random().nextInt(3)-1; // random -1,0,1
+                });
+            }
+        }
+    }
 
     public void animalsEat() {
         int size = this.environment.getAnimalMap().getObjects().size();

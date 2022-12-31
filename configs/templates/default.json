@@ -1,12 +1,12 @@
 {
 	"version": "1.0",
 	"settings": {
-		"mapSize": [10, 10],
+		"mapSize": [15, 15],
 		"animalMapType": "Earth",
-		"startingPlantCount": 15,
+		"startingPlantCount": 25,
 		"plantNutritionalValue": 10,
-		"plantGrowCount": 5,
-		"plantMapType": "ToxicCorpses",
+		"plantGrowCount": 8,
+		"plantMapType": "WoodedEquator",
 		"startingAnimalCount": 10,
 		"startingAnimalEnergy": 8,
 		"reproduceRequiredEnergy": 10,

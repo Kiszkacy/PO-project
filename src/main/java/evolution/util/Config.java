@@ -3,12 +3,8 @@ package evolution.util;
 import org.json.simple.JSONObject;
 import org.json.simple.JSONArray;
 import org.json.simple.parser.JSONParser;
-
-import java.io.FileNotFoundException;
+import java.io.File;
 import java.io.FileReader;
-import java.net.URL;
-
-import static evolution.util.EasyPrint.pcol;
 
 /**
  * Singleton pattern. Loaded once at start of the simulation. Holds all information about simulation's settings.
@@ -33,20 +29,14 @@ public class Config {
     private ThreadLocal<String> brainType = new ThreadLocal<>();
 
 
-    private static void createInstance() {
-        instance = ThreadLocal.withInitial(() -> new Config());
-    }
-
-
-    public static void loadConfig(String path) throws Exception {
+    public static void loadConfig(String from) throws Exception {
         // create json parser
         JSONParser parser = new JSONParser();
-        // look for file in resources directory
-        ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
-        URL url = classLoader.getResource(path);
-        if (url == null) throw new RuntimeException(String.format("config file not found, searched for: '%s'", path));
+        // look for file
+        String path = from + ".json";
+        if (!new File(path).exists() || new File(path).isDirectory()) throw new RuntimeException(String.format("config file: '%s' can not be found in '%s'", from, path));
         // create JSONObject instance
-        JSONObject obj = (JSONObject) parser.parse(new FileReader(url.getPath()));
+        JSONObject obj = (JSONObject) parser.parse(new FileReader(path));
         // check file version
         if (!version.get().equals(obj.get("version"))) throw new RuntimeException(String.format("outdated config file, version: '%s', expected: '%s'", obj.get("version"), version));
         // load settings
@@ -158,6 +148,7 @@ public class Config {
     public static String getBrainType() {
         return instance.get().brainType.get();
     }
+
 
     public static String getVersion(){
         return version.get();

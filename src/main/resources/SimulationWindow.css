@@ -1,0 +1,29 @@
+
+.root {
+    -fx-font-family: Bahnschrift, sans-serif;
+    -fx-font-size: 14;
+}
+
+.container {
+    -fx-padding: 6;
+    -fx-border-style: solid inside;
+    -fx-border-width: 2;
+    -fx-border-color: #777777;
+    -fx-border-radius: 10;
+}
+
+VBox, Hbox {
+    -fx-spacing: 12;
+}
+
+.title {
+    -fx-font-size: 24;
+    -fx-font-weight: bold;
+    -fx-text-alignment: center;
+}
+
+.subtitle {
+    -fx-font-size: 18;
+    -fx-font-weight: bold;
+    -fx-text-alignment: center;
+}
