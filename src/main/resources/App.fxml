@@ -14,7 +14,7 @@
           fx:controller="evolution.gui.AppController"
           xmlns:fx="http://javafx.com/fxml" alignment="center" hgap="10" vgap="10">
     <padding><Insets top="25" right="25" bottom="25" left="25"/></padding>
-    <Text text="Simulation configs"
+    <Text text="Simulation Configs"
           GridPane.columnIndex="0" GridPane.rowIndex="0"
           GridPane.columnSpan="2"
     >

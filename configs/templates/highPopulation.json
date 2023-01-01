@@ -1,0 +1,19 @@
+{
+	"version": "1.0",
+	"settings": {
+		"mapSize": [50, 50],
+		"animalMapType": "Earth",
+		"startingPlantCount": 200,
+		"plantNutritionalValue": 8,
+		"plantGrowCount": 30,
+		"plantMapType": "ToxicCorpses",
+		"startingAnimalCount": 50,
+		"startingAnimalEnergy": 35,
+		"reproduceRequiredEnergy": 20,
+		"reproduceEnergy": 15,
+		"mutationCount": [1, 5],
+		"genomeType": "CorrectiveGenome",
+		"genomeSize": 20,
+		"brainType": "RandomBrain"
+	}
+}

@@ -37,7 +37,9 @@ public class SimulationWindow {
             this.controller.init(new Simulation(config), tickCount, ticksPerSec, dumpData);
             // setup stage
             Stage stage = new Stage();
-            stage.setTitle("My New Stage Title");
+            stage.setMinHeight(720);
+            stage.setMinWidth(760);
+            stage.setTitle(String.format("Simulation %s", config.split("config-")[config.split("config-").length-1]));
             stage.setScene(scene);
             stage.show();
             stage.setOnCloseRequest(e -> {

@@ -28,8 +28,8 @@ public class CorrectiveGenome extends Genome {
             mutated.push(picked);
 
             Direction dir = Direction.values()[this.genes[picked]];
-            if (new Random().nextBoolean()) dir.next();
-            else                            dir.prev();
+            if (new Random().nextBoolean()) dir = dir.next();
+            else                            dir = dir.prev();
             this.genes[picked] = dir.ordinal();
         }
 

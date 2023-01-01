@@ -11,7 +11,7 @@
 		"startingAnimalEnergy": 8,
 		"reproduceRequiredEnergy": 10,
 		"reproduceEnergy": 8,
-		"mutationCount": [2, 6],
+		"mutationCount": [0, 1],
 		"genomeType": "CorrectiveGenome",
 		"genomeSize": 12,
 		"brainType": "NormalBrain"
