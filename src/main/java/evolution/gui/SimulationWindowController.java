@@ -94,7 +94,7 @@ public class SimulationWindowController implements Initializable {
         }
         ((Label)statsBox.lookup("#statAverageAnimalEnergy")).setText(String.valueOf(this.simulationTracker.getAverageAnimalEnergy()));
         ((Label)statsBox.lookup("#statAverageAnimalLifespan")).setText(String.valueOf(this.simulationTracker.getAverageAnimalLifespan()));
-        ((Label)statsBox.lookup("#currentDay")).setText(String.valueOf(this.simulationThread.getTick()));
+        ((Label)statsBox.lookup("#currentDay")).setText(String.valueOf(this.simulationThread.getTick()+1));
     }
 
 
@@ -283,7 +283,6 @@ public class SimulationWindowController implements Initializable {
         ((Label)animalTrackBox.lookup("#trackedAnimalEnergy")).setText("");
         ((Label)animalTrackBox.lookup("#trackedAnimalPlantsEaten")).setText("");
         ((Label)animalTrackBox.lookup("#trackedAnimalChildrenCount")).setText("");
-        ((Label)animalTrackBox.lookup("#trackedAnimalAge")).setText("");
         ((Label)animalTrackBox.lookup("#trackedAnimalAge")).setText("");
     }
 
