@@ -1,10 +1,8 @@
 # **_Projekt Generator Ewolucyjny_**
 #### autorzy: **Jakub Czajka**, **Karol Kiszka**
-***
 Projekt wykonany w ramach pierwszego projektu pt. _Generator Ewolucyjny_ na zajęcia z _Programowania Obiektowego_.
 
 ## Dokumentacja
-***
 Ta dokumentacja została napisana w celu ułatwienia korzystania z aplikacji i zapoznania się ze strukturą projektu.
 
 ### Opis projektu
@@ -194,6 +192,8 @@ Opcja wyboru śledzonego zwierzaka i wyświetlenia zwierzaków z najpopularniejs
 Po zatrzymaniu symulacji poprzez zamknięcie okna zostanie utworzony plik konfiguracyjny w folderze `configs`
 o nazwie odpowiadającej czasie uruchomienia symulacji (okno symulacji ma również tę samą nazwę). Jeżeli użytkownik wybrał opcje zapisywania danych symulacji do pliku
 zostanie również utworzony plik w folderze `data` o tej samej nazwie.
+
+Wartości w pliku CSV, to kolejno: ilość zwierząt, ilość roślin, ilość wolnych pól, najpopularniejszy genom, ilość zwierząt z tym genomem, średnia energia żyjących zwierząt, średnia długość życia zwierząt.
 
 ### Rozwój
 ***
