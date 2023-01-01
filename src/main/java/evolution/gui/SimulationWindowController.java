@@ -94,6 +94,7 @@ public class SimulationWindowController implements Initializable {
         }
         ((Label)statsBox.lookup("#statAverageAnimalEnergy")).setText(String.valueOf(this.simulationTracker.getAverageAnimalEnergy()));
         ((Label)statsBox.lookup("#statAverageAnimalLifespan")).setText(String.valueOf(this.simulationTracker.getAverageAnimalLifespan()));
+        ((Label)statsBox.lookup("#currentDay")).setText(String.valueOf(this.simulationThread.getTick()));
     }
 
 
@@ -156,7 +157,7 @@ public class SimulationWindowController implements Initializable {
         for(int y = 0; y < size.y; y++) {
             for(int x = 0; x < size.x; x++) {
                 if (!simulation.getWorld().getEnvironment().getAnimalMap().isEmpty(new Vector2(x, y))) {
-                    LinkedList<Animal> animals = simulation.getWorld().getEnvironment().getAnimalMap().getObjectsAt(new Vector2(x, y));
+                    LinkedList<Animal> animals = (LinkedList<Animal>) simulation.getWorld().getEnvironment().getAnimalMap().getObjectsAt(new Vector2(x, y)).clone();
 
                     int animalCount = animals.size();
                     int subGridSize = getAnimalGridSize(animalCount);

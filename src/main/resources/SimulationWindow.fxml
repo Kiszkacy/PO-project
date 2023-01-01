@@ -50,6 +50,10 @@
                     <Label minWidth="120.0" wrapText="true">Average animal lifespan:</Label>
                     <Label id="statAverageAnimalLifespan" wrapText="true"></Label>
                 </HBox>
+                <HBox spacing="4">
+                    <Label>Current day:</Label>
+                    <Label id="currentDay" wrapText="true"></Label>
+                </HBox>
             </VBox>
 <!--            INFO O ZWIERZAKU CONTAINER-->
             <VBox fx:id="animalTrackBox" prefHeight="960.0" prefWidth="360.0" styleClass="container" minHeight="280.0">

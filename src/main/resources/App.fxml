@@ -9,6 +9,7 @@
 <?import javafx.geometry.Insets?>
 
 <?import javafx.scene.text.Text?>
+<?import javafx.scene.text.Font?>
 <GridPane fx:id="grid"
           fx:controller="evolution.gui.AppController"
           xmlns:fx="http://javafx.com/fxml" alignment="center" hgap="10" vgap="10">
@@ -16,24 +17,47 @@
     <Text text="Simulation configs"
           GridPane.columnIndex="0" GridPane.rowIndex="0"
           GridPane.columnSpan="2"
-    />
+    >
+        <font>
+            <Font name="sans-serif" size="20.0" />
+        </font>
+    </Text>
     <Button fx:id="configButton"
             text="Select Config"
             onAction="#runFileChooser"
             GridPane.columnIndex="2"
-            GridPane.rowIndex="1"
+            GridPane.rowIndex="0"
     />
+    <Text fx:id="SettingsText"
+          text="Simulation Settings"
+          GridPane.columnIndex="0" GridPane.rowIndex="1"
+          GridPane.columnSpan="2"
+    >
+        <font>
+            <Font name="sans-serif" size="20.0" />
+        </font>
+    </Text>
+    <Text fx:id="tickPerSecText"
+          text="Target FPS"
+          GridPane.columnIndex="0" GridPane.rowIndex="2"
+    />
+    <TextField fx:id="tickPerSec"
+               GridPane.columnIndex="1" GridPane.rowIndex="2"
+    />
+    <CheckBox fx:id="dumpData"
+              GridPane.columnIndex="0" GridPane.rowIndex="3"
+              text="Save data"/>
     <Button fx:id="startButton"
             text="Start simulation"
             onAction="#runSimulationInstance"
             GridPane.columnIndex="1"
-            GridPane.rowIndex="2"
+            GridPane.rowIndex="4"
     />
     <Button fx:id="clearButton"
             text="Clear settings"
             onAction="#clearAllSettings"
             GridPane.columnIndex="2"
-            GridPane.rowIndex="2"
+            GridPane.rowIndex="4"
     />
 
 

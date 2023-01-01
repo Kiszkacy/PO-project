@@ -53,7 +53,7 @@ public class Main {
                     pcol(Color.WEAK_GREEN, app.getWorld().getEnvironment().getPlantMap().toString());
                     for (int i = 0; i < tickCount; i++) {
                         app.tick();
-                        if (manualTicks && (i + 1) % tickStep == 0 && (i + 1) != tickCount) { // dont print last tick if its last tick in sim
+                        if (manualTicks && (i + 1) % tickStep == 0 && (i + 1) != tickCount) { // don't print last tick if its last tick in sim
                             p(String.format("tick: %s", i + 1));
                             pcol(Color.WEAK_YELLOW, app.getWorld().getEnvironment().getAnimalMap().toString());
                             pcol(Color.WEAK_GREEN, app.getWorld().getEnvironment().getPlantMap().toString());

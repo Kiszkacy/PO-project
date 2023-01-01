@@ -5,9 +5,11 @@ import evolution.util.ExceptionHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Button;
+import javafx.scene.control.CheckBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.GridPane;
+import javafx.scene.text.Text;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 import org.json.simple.JSONObject;
@@ -36,28 +38,38 @@ public class AppController implements Initializable {
     public Button startButton;
     @FXML
     public Button clearButton;
+    public Text SettingsText;
+    public Text tickPerSecText;
+    public Button configButton;
     @FXML
     private GridPane grid;
 
     private final Map<String, TextField> configs = new HashMap<>();
+    @FXML
+    private CheckBox dumpData;
+    @FXML
+    private TextField tickPerSec;
     private Stage stage;
 
     /**
      * This method is required to be called once before using the controller.
      */
     public void init() {
+        stage.setMinHeight(700);
+        stage.setMinWidth(300);
         this.setupInputFields();
         // load default config settings
         Path resourceDirectory = Paths.get("src","main","resources","default");
         String absolutePath = resourceDirectory.toFile().getAbsolutePath();
         this.loadConfig(absolutePath);
+        tickPerSec.setText("60");
     }
 
     /**
      * Creates input fields where user can specify simulation settings.
      */
     public void setupInputFields() {
-        int height = grid.getRowCount();
+        int height = 1;
 
         Field[] attributes = Config.class.getDeclaredFields();
         for (Field field : attributes) {
@@ -71,6 +83,10 @@ public class AppController implements Initializable {
             grid.add(textField, 1, height++);
         }
 
+        GridPane.setRowIndex(SettingsText, height++);
+        GridPane.setRowIndex(tickPerSec, height);
+        GridPane.setRowIndex(tickPerSecText, height++);
+        GridPane.setRowIndex(dumpData, height++);
         GridPane.setRowIndex(startButton, height);
         GridPane.setRowIndex(clearButton, height);
     }
@@ -163,6 +179,10 @@ public class AppController implements Initializable {
         return true;
     }
 
+    private boolean isSettingsValid(){
+        return Pattern.matches("^[1-9][0-9]*$", tickPerSec.getCharacters());
+    }
+
 
     private void saveConfig(String to) {
         JSONObject configObjects = new JSONObject();
@@ -213,6 +233,7 @@ public class AppController implements Initializable {
     @FXML
     private void runSimulationInstance() {
         if (!this.isConfigsValid()) return; // check if input is valid
+        if (!isSettingsValid()) return; //check if settings are valid
         // get unique id (current time)
         DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy-MM-dd_HH-mm-ss");
         LocalDateTime now = LocalDateTime.now();
@@ -221,7 +242,7 @@ public class AppController implements Initializable {
         try {
             // TODO here make ticksPerSec dynamic (value 50)
             // TODO here last boolean value determines if CSV file is created (value true)
-            SimulationWindow sim = new SimulationWindow(new File(".").getCanonicalPath()+"\\configs\\"+"config-"+dtf.format(now), -1, 50, true);
+            SimulationWindow sim = new SimulationWindow(new File(".").getCanonicalPath()+"\\configs\\"+"config-"+dtf.format(now), -1, Integer.parseInt(tickPerSec.getCharacters().toString()), dumpData.isSelected());
             sim.run();
         } catch (Exception e) {
             ExceptionHandler.printCriticalInfo(e);
