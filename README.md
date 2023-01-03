@@ -95,7 +95,7 @@ Podział i implementacja tych wariantów, to zgodnie z oryginalną kolejnością
 > - pełna predestynacja — klasa **NormalBrain**
 > - nieco szaleństwa — klasa **RandomBrain**
 > <!-- end of the list -->
-> Klasa, która jest odpowiedzialna za implementacje metod wpływających na zachowanie zwierzaków poprzez wybór aktywnego genu, to **Brain**, po której obie klasy **RandomBrain** i **NormalBrain** dziedziczą.
+> Klasa, która jest odpowiedzialna za implementacje metod wpływających na zachowanie zwierzaków poprzez wybór aktywnego genu, to **Brain**, po której obie klasy **NormalBrain** i **RandomBrain** dziedziczą.
 
 Warto zauważyć, że struktura naszego projektu bardzo łatwo umożliwia dodanie nowych wariantów wpływających na przebieg symulacji, jedynie poprzez zaimplementowanie odpowiedniej klasy dziedziczącej po jednej z wymienionych wyżej klas i zarejestrowanie jej w odpowiednim pliku. Więcej informacji o tym procesie w [sekcji rozwój](#Rozwój).
 
@@ -229,7 +229,7 @@ bardziej zaawansowanych zachowań — niż tylko stworzenie dodatkowych wariant�
 ### Uwagi i znane błędy
 ***
 
-- Wydajność rysowania symulacji jest dość słaba i mogłaby zostać bardzo usprawniona,
+- Wydajność rysowania symulacji jest dość niska i mogłaby zostać bardzo usprawniona,
 co umożliwiłoby działanie symulacji na większej ilości ticków na sekundę.
 - Przy uruchomieniu symulacji występuje lag prawdopodobnie związany z niezoptymalizowanym sposobem rysowania i wielkością mapy, ponieważ przy większej mapie jest on dłuższy.
 - W przypadku kliknięcia na więcej niż jednego zwierzaka podczas zapauzowanej symulacji
